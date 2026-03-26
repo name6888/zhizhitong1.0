@@ -1,715 +1,815 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>智治通 · 川北川南一站式社区共治服务平台</title>
-  <style>
-    /* ==================== 全局样式 ==================== */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      color: #1f2937;
-      background-color: #f8fafc;
-      line-height: 1.6;
-    }
-    /* ==================== 导航栏 ==================== */
-    .navbar {
-      background: #ffffff;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      height: 70px;
-    }
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-      height: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .brand-logo {
-      display: flex;
-      align-items: center;
-    }
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-    }
-    .brand-name {
-      font-size: 20px;
-      font-weight: 700;
-      color: #1a56db;
-    }
-    .brand-slogan {
-      font-size: 11px;
-      color: #6b7280;
-    }
-    .nav-menu {
-      display: flex;
-      list-style: none;
-      gap: 32px;
-    }
-    .nav-menu a {
-      text-decoration: none;
-      color: #1f2937;
-      font-size: 14px;
-      font-weight: 500;
-      padding: 8px 0;
-      border-bottom: 2px solid transparent;
-      transition: all 0.3s;
-    }
-    .nav-menu a:hover, .nav-menu a.active {
-      color: #1a56db;
-      border-bottom-color: #1a56db;
-    }
-    /* ==================== Hero 区域 ==================== */
-    .hero {
-      background: linear-gradient(135deg, #1e3a8a 0%, #1a56db 100%);
-      color: white;
-      padding: 160px 24px 120px;
-      min-height: 700px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      /* 替换为社区相关背景图（邻里互动场景） */
-      background: url('https://picsum.photos/id/1048/1920/1080') center/cover;
-      opacity: 0.1;
-    }
-    .hero-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-    .hero-title {
-      /* 标题字体放大 */
-      font-size: 56px;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 24px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .hero-subtitle {
-      /* 副标题字体放大 */
-      font-size: 20px;
-      line-height: 1.8;
-      color: rgba(255,255,255,0.9);
-      margin-bottom: 32px;
-    }
-    /* ==================== 按钮样式 ==================== */
-    .btn {
-      padding: 12px 28px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn-primary {
-      background: #ffffff;
-      color: #1a56db;
-      box-shadow: 0 4px 12px rgba(26,86,219,0.2);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(26,86,219,0.3);
-    }
-    .btn-secondary {
-      background: transparent;
-      color: white;
-      border: 2px solid white;
-      margin-left: 16px;
-    }
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.1);
-    }
-    /* ==================== 通用 Section 样式 ==================== */
-    section {
-      padding: 80px 24px;
-    }
-    .section-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .section-header {
-      text-align: center;
-      margin-bottom: 56px;
-    }
-    .section-title {
-      font-size: 36px;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 16px;
-      position: relative;
-      display: inline-block;
-    }
-    .section-title::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 3px;
-      background: #1a56db;
-    }
-    .section-subtitle {
-      font-size: 16px;
-      color: #6b7280;
-    }
-    /* ==================== 核心功能 ==================== */
-    .features {
-      background: #f8fafc;
-    }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 24px;
-    }
-    .feature-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 32px;
-      border: 1px solid #e5e7eb;
-      transition: all 0.3s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    .feature-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      border-color: #1a56db;
-    }
-    .feature-icon {
-      font-size: 40px;
-      margin-bottom: 16px;
-      color: #1a56db;
-    }
-    .feature-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #1f2937;
-      margin: 16px 0 12px;
-    }
-    .feature-desc {
-      font-size: 14px;
-      color: #6b7280;
-      line-height: 1.6;
-    }
-    /* ==================== 五维协同生态 ==================== */
-    .ecosystem {
-      background: #ffffff;
-      padding: 100px 24px;
-    }
-    .ecosystem-visual {
-      position: relative;
-      max-width: 1000px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 30px;
-    }
-    .ecosystem-node {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 28px 20px;
-      border: 2px solid #dbeafe;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-      transition: all 0.3s;
-      text-align: center;
-    }
-    .ecosystem-node:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 8px 24px rgba(26,86,219,0.15);
-      border-color: #1a56db;
-    }
-    .node-icon {
-      font-size: 32px;
-      margin-bottom: 10px;
-      color: #1a56db;
-    }
-    .node-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 6px;
-    }
-    .node-desc {
-      font-size: 12px;
-      color: #6b7280;
-      line-height: 1.4;
-    }
-    /* ==================== 应用场景 ==================== */
-    .scenarios {
-      background: #f8fafc;
-    }
-    .scenario-list {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .scenario-item {
-      display: flex;
-      gap: 20px;
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 28px;
-      margin-bottom: 20px;
-      border: 1px solid #e5e7eb;
-      transition: all 0.3s;
-    }
-    .scenario-item:hover {
-      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-    }
-    .scenario-number {
-      width: 56px;
-      height: 56px;
-      background: linear-gradient(135deg, #1a56db 0%, #1e3a8a 100%);
-      color: white;
-      font-size: 24px;
-      font-weight: 700;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .scenario-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 8px;
-    }
-    .scenario-desc {
-      font-size: 14px;
-      color: #6b7280;
-    }
-    /* ==================== AI语音助手模块 ==================== */
-    .ai-section {
-      background: #ffffff;
-      padding: 80px 24px;
-    }
-    .ai-demo {
-      background: #f0f7ff;
-      border: 2px solid #1a56db;
-      border-radius: 12px;
-      padding: 30px;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-    .ai-demo-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .ai-icon {
-      font-size: 36px;
-      color: #1a56db;
-    }
-    .ai-header-text h3 {
-      font-size: 22px;
-      color: #1f2937;
-      margin-bottom: 4px;
-    }
-    .ai-header-text p {
-      font-size: 14px;
-      color: #6b7280;
-    }
-    .ai-interaction {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .ai-input, .ai-reply {
-      border-radius: 8px;
-      padding: 16px;
-      text-align: left;
-    }
-    .ai-input {
-      background: white;
-      border: 1px solid #dcdfe6;
-    }
-    .ai-reply {
-      background: #1a56db;
-      color: white;
-      align-self: flex-start;
-      max-width: 80%;
-    }
-    .ai-input strong, .ai-reply strong {
-      display: block;
-      margin-bottom: 4px;
-    }
-    .ai-note {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #6b7280;
-      text-align: center;
-    }
-    /* ==================== CTA 区域 ==================== */
-    .cta {
-      background: linear-gradient(135deg, #1a56db 0%, #1e3a8a 100%);
-      color: white;
-      text-align: center;
-      padding: 80px 24px;
-    }
-    .cta-container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .cta-title {
-      font-size: 36px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-    .cta-subtitle {
-      font-size: 18px;
-      color: rgba(255,255,255,0.9);
-      margin-bottom: 32px;
-    }
-    .cta-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-    }
-    .btn-outline {
-      background: transparent;
-      border: 2px solid white;
-      color: white;
-    }
-    .btn-outline:hover {
-      background: rgba(255,255,255,0.1);
-    }
-    .btn-large {
-      padding: 16px 40px;
-      font-size: 16px;
-    }
-    /* ==================== 页脚 ==================== */
-    .footer {
-      background: #1e3a8a;
-      color: white;
-      padding: 40px 24px;
-    }
-    .footer-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .footer-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .footer-brand-name {
-      font-size: 18px;
-      font-weight: 600;
-    }
-    .footer-brand-slogan {
-      font-size: 12px;
-      color: rgba(255,255,255,0.7);
-    }
-    .footer-info {
-      text-align: right;
-    }
-    .footer-info p {
-      font-size: 14px;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 4px;
-    }
-    /* ==================== 响应式适配 ==================== */
-    @media (max-width: 968px) {
-      .hero-title {
-        font-size: 38px;
-      }
-      .hero-subtitle {
-        font-size: 18px;
-      }
-      .ai-demo {
-        padding: 24px;
-      }
-    }
-    @media (max-width: 640px) {
-      .nav-menu {
-        display: none;
-      }
-      .hero {
-        padding: 100px 16px 60px;
-      }
-      .hero-title {
-        font-size: 32px;
-      }
-      .hero-subtitle {
-        font-size: 16px;
-      }
-      .features-grid {
-        grid-template-columns: 1fr;
-      }
-      .footer-container {
-        flex-direction: column;
-        gap: 24px;
-        text-align: center;
-      }
-      .ecosystem-node {
-        min-width: 120px;
-        padding: 20px 16px;
-      }
-      .ecosystem-visual {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-      }
-      .scenario-item {
-        padding: 20px;
-      }
-      .ai-reply {
-        max-width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智治通 · 川北川南一站式社区共治服务平台</title>
+    <!-- 引入Font Awesome矢量图标 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ==================== 全局样式 ==================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            color: #1f2937;
+            background-color: #f8fafc;
+            line-height: 1.6;
+        }
+        /* 全局平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* ==================== 导航栏 ==================== */
+        .navbar {
+            background: #ffffff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 70px;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-logo {
+            display: flex;
+            align-items: center;
+        }
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .brand-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a56db;
+        }
+        .brand-slogan {
+            font-size: 11px;
+            color: #6b7280;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+        }
+        .nav-menu a {
+            text-decoration: none;
+            color: #1f2937;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #1a56db;
+            border-bottom-color: #1a56db;
+        }
+        /* 移动端汉堡菜单 */
+        .nav-toggle {
+            display: none;
+            cursor: pointer;
+        }
+        .nav-menu-mobile {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: white;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+        .nav-menu-mobile.active {
+            display: flex;
+        }
+        .nav-menu-mobile li {
+            list-style: none;
+            margin-bottom: 16px;
+        }
+        .nav-menu-mobile a {
+            text-decoration: none;
+            color: #1f2937;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        /* ==================== Hero 区域 ==================== */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1a56db 100%);
+            color: white;
+            padding: 160px 24px 120px;
+            min-height: 700px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://picsum.photos/id/1048/1920/1080') center/cover;
+            opacity: 0.1;
+        }
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-title {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 24px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .hero-subtitle {
+            font-size: 20px;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 32px;
+        }
+        /* ==================== 按钮样式 ==================== */
+        .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: #ffffff;
+            color: #1a56db;
+            box-shadow: 0 4px 12px rgba(26,86,219,0.2);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(26,86,219,0.3);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            margin-left: 16px;
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        /* ==================== 通用 Section 样式 ==================== */
+        section {
+            padding: 80px 24px;
+        }
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 16px;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #1a56db;
+        }
+        .section-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+        }
+        /* ==================== 核心功能 ==================== */
+        .features {
+            background: #f8fafc;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-color: #1a56db;
+        }
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+            color: #1a56db;
+        }
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 16px 0 12px;
+        }
+        .feature-desc {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        /* ==================== 五维协同生态 ==================== */
+        .ecosystem {
+            background: #ffffff;
+            padding: 100px 24px;
+        }
+        .ecosystem-visual {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 30px;
+        }
+        .ecosystem-node {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 28px 20px;
+            border: 2px solid #dbeafe;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .ecosystem-node:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 24px rgba(26,86,219,0.15);
+            border-color: #1a56db;
+        }
+        .node-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #1a56db;
+        }
+        .node-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 6px;
+        }
+        .node-desc {
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+        /* ==================== 应用场景 ==================== */
+        .scenarios {
+            background: #f8fafc;
+        }
+        .scenario-list {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .scenario-item {
+            display: flex;
+            gap: 20px;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+        .scenario-item:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        }
+        .scenario-number {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #1a56db 0%, #1e3a8a 100%);
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .scenario-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        .scenario-desc {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        /* ==================== AI语音助手模块 ==================== */
+        .ai-section {
+            background: #ffffff;
+            padding: 80px 24px;
+        }
+        .ai-demo {
+            background: #f0f7ff;
+            border: 2px solid #1a56db;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .ai-demo-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .ai-icon {
+            font-size: 36px;
+            color: #1a56db;
+        }
+        .ai-header-text h3 {
+            font-size: 22px;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+        .ai-header-text p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .ai-interaction {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .ai-input, .ai-reply {
+            border-radius: 8px;
+            padding: 16px;
+            text-align: left;
+        }
+        .ai-input {
+            background: white;
+            border: 1px solid #dcdfe6;
+            cursor: pointer;
+        }
+        .ai-reply {
+            background: #1a56db;
+            color: white;
+            align-self: flex-start;
+            max-width: 80%;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ai-input strong, .ai-reply strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+        .ai-note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #6b7280;
+            text-align: center;
+        }
+        /* ==================== CTA 区域 ==================== */
+        .cta {
+            background: linear-gradient(135deg, #1a56db 0%, #1e3a8a 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 24px;
+        }
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .cta-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .cta-subtitle {
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 32px;
+        }
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .btn-large {
+            padding: 16px 40px;
+            font-size: 16px;
+        }
+        /* ==================== 页脚 ==================== */
+        .footer {
+            background: #1e3a8a;
+            color: white;
+            padding: 40px 24px;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .footer-brand-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .footer-brand-slogan {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+        }
+        .footer-info {
+            text-align: right;
+        }
+        .footer-info p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 4px;
+        }
+        /* ==================== 返回顶部按钮 ==================== */
+        #backToTop {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a56db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 999;
+        }
+        /* ==================== 响应式适配 ==================== */
+        @media (max-width: 968px) {
+            .hero-title {
+                font-size: 38px;
+            }
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            .ai-demo {
+                padding: 24px;
+            }
+        }
+        @media (max-width: 640px) {
+            .nav-toggle {
+                display: block;
+            }
+            .nav-menu {
+                display: none;
+            }
+            .hero {
+                padding: 100px 16px 60px;
+            }
+            .hero-title {
+                font-size: 32px;
+            }
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-container {
+                flex-direction: column;
+                gap: 24px;
+                text-align: center;
+            }
+            .ecosystem-node {
+                min-width: 120px;
+                padding: 20px 16px;
+            }
+            .ecosystem-visual {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            .scenario-item {
+                padding: 20px;
+            }
+            .ai-reply {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
 <!-- 导航栏 -->
 <nav class="navbar">
-  <div class="nav-container">
-    <div class="nav-brand">
-      <div class="brand-logo">
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="20" r="18" stroke="#1a56db" stroke-width="2"/>
-          <path d="M20 8L28 24H12L20 8Z" fill="#1a56db"/>
-          <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
-        </svg>
-      </div>
-      <div class="brand-text">
-        <span class="brand-name">智治通</span>
-        <span class="brand-slogan">川北川南一站式社区共治服务平台</span>
-      </div>
+    <div class="nav-container">
+        <div class="nav-brand">
+            <div class="brand-logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="#1a56db" stroke-width="2"/>
+                    <path d="M20 8L28 24H12L20 8Z" fill="#1a56db"/>
+                    <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">智治通</span>
+                <span class="brand-slogan">川北川南一站式社区共治服务平台</span>
+            </div>
+        </div>
+        <!-- 汉堡按钮 -->
+        <div class="nav-toggle" id="navToggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </div>
+        <!-- 桌面菜单 -->
+        <ul class="nav-menu">
+            <li><a href="index.html" class="active">首页</a></li>
+            <li><a href="project.html">项目介绍</a></li>
+            <li><a href="#features">核心功能</a></li>
+            <li><a href="#ecosystem">协同生态</a></li>
+            <li><a href="#scenarios">应用场景</a></li>
+        </ul>
     </div>
-    <ul class="nav-menu">
-      <li><a href="index.html" class="active">首页</a></li>
-      <li><a href="project.html">项目介绍</a></li>
-      <li><a href="#features">核心功能</a></li>
-      <li><a href="#ecosystem">协同生态</a></li>
-      <li><a href="#scenarios">应用场景</a></li>
-    </ul>
-  </div>
 </nav>
 <!-- 首页主体 -->
 <main>
-  <!-- Hero 区域 -->
-  <section class="hero">
-    <div class="hero-container">
-      <div class="hero-content">
-        <h1 class="hero-title">
-          智治通 · 川北川南一站式社区共治服务平台
-        </h1>
-        <p class="hero-subtitle">
-          数智赋能基层治理 · 打通诉求匹配最后一公里
-        </p>
-        <div class="hero-cta">
-          <a href="project.html" class="btn btn-primary">了解详情</a>
-          <a href="#features" class="btn btn-secondary">核心功能</a>
+    <!-- Hero 区域 -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    智治通 · 川北川南一站式社区共治服务平台
+                </h1>
+                <p class="hero-subtitle">
+                    数智赋能基层治理 · 打通诉求匹配最后一公里
+                </p>
+                <div class="hero-cta">
+                    <a href="project.html" class="btn btn-primary">了解详情</a>
+                    <a href="#features" class="btn btn-secondary">核心功能</a>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
-  <!-- 核心功能 -->
-  <section id="features" class="features">
-    <div class="section-container">
-      <div class="section-header">
-        <h2 class="section-title">核心功能</h2>
-        <p class="section-subtitle">构建"需求提交-资源匹配-服务执行-评价反馈"全流程闭环</p>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">💬</div>
-          <h3 class="feature-title">民意一键上报</h3>
-          <p class="feature-desc">居民随手拍、文字上报社区问题，平台智能分流至对应部门或物业，形成"上报-分流-处置-评价"的闭环管理。</p>
+    </section>
+    <!-- 核心功能 -->
+    <section id="features" class="features">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">核心功能</h2>
+                <p class="section-subtitle">构建"需求提交-资源匹配-服务执行-评价反馈"全流程闭环</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-comments"></i></div>
+                    <h3 class="feature-title">民意一键上报</h3>
+                    <p class="feature-desc">居民随手拍、文字上报社区问题，平台智能分流至对应部门或物业，形成"上报-分流-处置-评价"的闭环管理。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <h3 class="feature-title">纠纷调解对接</h3>
+                    <p class="feature-desc">链接政府部门、物业、法律工作者等多方资源，协同解决如电梯安装纠纷、邻里矛盾等复杂问题。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-handshake-angle"></i></div>
+                    <h3 class="feature-title">志愿服务匹配</h3>
+                    <p class="feature-desc">社会组织入驻平台发布志愿活动，智能匹配社区需求与志愿者，积累社区积分进行激励。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                    <h3 class="feature-title">数据价值服务</h3>
+                    <p class="feature-desc">对社区事件解决方案、原因进行脱敏分析，为高校、研究所提供合规的研究数据，实现数据价值变现。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-bell"></i></div>
+                    <h3 class="feature-title">社区通知公告</h3>
+                    <p class="feature-desc">精准推送社区重要通知、活动信息，支持已读未读统计，确保信息有效触达。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+                    <h3 class="feature-title">AI语音助手（规划中）</h3>
+                    <p class="feature-desc">后续革新规划功能，支持语音输入诉求并一键跳转对应服务页面，解决老年人操作难题，提升便捷性。</p>
+                </div>
+            </div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">⚖️</div>
-          <h3 class="feature-title">纠纷调解对接</h3>
-          <p class="feature-desc">链接政府部门、物业、法律工作者等多方资源，协同解决如电梯安装纠纷、邻里矛盾等复杂问题。</p>
+    </section>
+    <!-- 五维协同生态 -->
+    <section id="ecosystem" class="ecosystem">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">五维协同生态</h2>
+                <p class="section-subtitle">构建"政府主导、社会协同、公众参与、科技支撑"的共治新格局</p>
+            </div>
+            <div class="ecosystem-visual">
+                <div class="ecosystem-node">
+                    <div class="node-icon"><i class="fa-solid fa-building-columns"></i></div>
+                    <div class="node-title">政府部门</div>
+                    <div class="node-desc">政策推送·诉求收集·治理提效</div>
+                </div>
+                <div class="ecosystem-node">
+                    <div class="node-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="node-title">社区居民</div>
+                    <div class="node-desc">诉求上报·议事参与·服务享受</div>
+                </div>
+                <div class="ecosystem-node">
+                    <div class="node-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="node-title">高校力量</div>
+                    <div class="node-desc">专业支撑·科研实践·数据购买</div>
+                </div>
+                <div class="ecosystem-node">
+                    <div class="node-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                    <div class="node-title">社会组织</div>
+                    <div class="node-desc">志愿活动·专业服务·培训支持</div>
+                </div>
+                <div class="ecosystem-node">
+                    <div class="node-icon"><i class="fa-solid fa-house-chimney-user"></i></div>
+                    <div class="node-title">社区物业</div>
+                    <div class="node-desc">问题处理·服务响应·居民沟通</div>
+                </div>
+            </div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🤝</div>
-          <h3 class="feature-title">志愿服务匹配</h3>
-          <p class="feature-desc">社会组织入驻平台发布志愿活动，智能匹配社区需求与志愿者，积累社区积分进行激励。</p>
+    </section>
+    <!-- 应用场景 -->
+    <section id="scenarios" class="scenarios">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">核心应用场景</h2>
+                <p class="section-subtitle">聚焦社区治理真实痛点，提供精准解决方案</p>
+            </div>
+            <div class="scenario-list">
+                <div class="scenario-item">
+                    <div class="scenario-number">01</div>
+                    <div>
+                        <h3 class="scenario-title">老旧小区电梯安装纠纷</h3>
+                        <p class="scenario-desc">居民通过平台上报电梯安装意愿与矛盾，平台快速匹配街道办、物业、法律工作者，组织线上线下协商，推动问题解决。</p>
+                    </div>
+                </div>
+                <div class="scenario-item">
+                    <div class="scenario-number">02</div>
+                    <div>
+                        <h3 class="scenario-title">独居老人关怀与服务</h3>
+                        <p class="scenario-desc">平台规划对接智能设备数据，实时监测独居老人异常情况，并联动社区网格员与志愿者提供及时上门关怀服务。</p>
+                    </div>
+                </div>
+                <div class="scenario-item">
+                    <div class="scenario-number">03</div>
+                    <div>
+                        <h3 class="scenario-title">社区公共设施报修</h3>
+                        <p class="scenario-desc">居民拍照上传公共设施损坏情况，平台自动派单给物业维修人员，维修过程透明可追溯，完成后可进行满意度评价。</p>
+                    </div>
+                </div>
+                <div class="scenario-item">
+                    <div class="scenario-number">04</div>
+                    <div>
+                        <h3 class="scenario-title">更多社区治理场景</h3>
+                        <p class="scenario-desc">涵盖邻里互助、政策咨询、社区活动报名、民生服务代办等多元化需求，持续拓展服务边界，打造全场景社区共治体系。</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">📊</div>
-          <h3 class="feature-title">数据价值服务</h3>
-          <p class="feature-desc">对社区事件解决方案、原因进行脱敏分析，为高校、研究所提供合规的研究数据，实现数据价值变现。</p>
+    </section>
+    <!-- AI语音助手模块 -->
+    <section class="ai-section" id="ai-assistant">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">核心创新：AI语音助手</h2>
+                <p class="section-subtitle">语音交互零门槛，适老化设计更贴心</p>
+            </div>
+            <div class="ai-demo">
+                <div class="ai-demo-header">
+                    <div class="ai-icon"><i class="fa-solid fa-microphone"></i></div>
+                    <div class="ai-header-text">
+                        <h3>语音输入诉求，一键直达服务</h3>
+                        <p>无需手动操作，方言也能精准识别（规划中支持四川话、重庆话等方言）</p>
+                    </div>
+                </div>
+                <div class="ai-interaction">
+                    <div class="ai-input" id="aiInput">
+                        <strong>用户语音输入：</strong>「我想咨询社区养老保险认证怎么办理？」
+                    </div>
+                    <div class="ai-reply" id="aiReply">
+                        <strong>AI语音回复：</strong>「已为您匹配养老保险认证服务，点击下方链接即可查看办理流程、所需材料及线上办理入口👇」
+                        <a href="#" style="color: #e0f2fe; text-decoration: underline; display: inline-block; margin-top: 8px;">👉 养老保险认证服务专区</a>
+                    </div>
+                </div>
+                <p class="ai-note">* 初版为静态展示，后续落地将开发真实语音识别、方言适配与页面跳转功能</p>
+            </div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔔</div>
-          <h3 class="feature-title">社区通知公告</h3>
-          <p class="feature-desc">精准推送社区重要通知、活动信息，支持已读未读统计，确保信息有效触达。</p>
+    </section>
+    <!-- 行动号召 -->
+    <section class="cta">
+        <div class="cta-container">
+            <h2 class="cta-title">共建智慧社区，共享美好生活</h2>
+            <p class="cta-subtitle">我们致力于通过数字化手段，提升社区治理效率，增强居民幸福感与参与感。</p>
+            <div class="cta-buttons">
+                <a href="project.html" class="btn btn-primary btn-large">了解项目详情</a>
+            </div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🎯</div>
-          <h3 class="feature-title">AI语音助手（规划中）</h3>
-          <p class="feature-desc">后续革新规划功能，支持语音输入诉求并一键跳转对应服务页面，解决老年人操作难题，提升便捷性。</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- 五维协同生态 -->
-  <section id="ecosystem" class="ecosystem">
-    <div class="section-container">
-      <div class="section-header">
-        <h2 class="section-title">五维协同生态</h2>
-        <p class="section-subtitle">构建"政府主导、社会协同、公众参与、科技支撑"的共治新格局</p>
-      </div>
-      <div class="ecosystem-visual">
-        <div class="ecosystem-node">
-          <div class="node-icon">🏛️</div>
-          <div class="node-title">政府部门</div>
-          <div class="node-desc">政策推送·诉求收集·治理提效</div>
-        </div>
-        <div class="ecosystem-node">
-          <div class="node-icon">👥</div>
-          <div class="node-title">社区居民</div>
-          <div class="node-desc">诉求上报·议事参与·服务享受</div>
-        </div>
-        <div class="ecosystem-node">
-          <div class="node-icon">🎓</div>
-          <div class="node-title">高校力量</div>
-          <div class="node-desc">专业支撑·科研实践·数据购买</div>
-        </div>
-        <div class="ecosystem-node">
-          <div class="node-icon">🤝</div>
-          <div class="node-title">社会组织</div>
-          <div class="node-desc">志愿活动·专业服务·培训支持</div>
-        </div>
-        <div class="ecosystem-node">
-          <div class="node-icon">🏘️</div>
-          <div class="node-title">社区物业</div>
-          <div class="node-desc">问题处理·服务响应·居民沟通</div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- 应用场景 -->
-  <section id="scenarios" class="scenarios">
-    <div class="section-container">
-      <div class="section-header">
-        <h2 class="section-title">核心应用场景</h2>
-        <p class="section-subtitle">聚焦社区治理真实痛点，提供精准解决方案</p>
-      </div>
-      <div class="scenario-list">
-        <div class="scenario-item">
-          <div class="scenario-number">01</div>
-          <div>
-            <h3 class="scenario-title">老旧小区电梯安装纠纷</h3>
-            <p class="scenario-desc">居民通过平台上报电梯安装意愿与矛盾，平台快速匹配街道办、物业、法律工作者，组织线上线下协商，推动问题解决。</p>
-          </div>
-        </div>
-        <div class="scenario-item">
-          <div class="scenario-number">02</div>
-          <div>
-            <h3 class="scenario-title">独居老人关怀与服务</h3>
-            <p class="scenario-desc">平台规划对接智能设备数据，实时监测独居老人异常情况，并联动社区网格员与志愿者提供及时上门关怀服务。</p>
-          </div>
-        </div>
-        <div class="scenario-item">
-          <div class="scenario-number">03</div>
-          <div>
-            <h3 class="scenario-title">社区公共设施报修</h3>
-            <p class="scenario-desc">居民拍照上传公共设施损坏情况，平台自动派单给物业维修人员，维修过程透明可追溯，完成后可进行满意度评价。</p>
-          </div>
-        </div>
-        <!-- 新增04应用场景（省略式） -->
-        <div class="scenario-item">
-          <div class="scenario-number">04</div>
-          <div>
-            <h3 class="scenario-title">更多社区治理场景</h3>
-            <p class="scenario-desc">涵盖邻里互助、政策咨询、社区活动报名、民生服务代办等多元化需求，持续拓展服务边界，打造全场景社区共治体系。</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- 新增AI语音助手模块 -->
-  <section class="ai-section" id="ai-assistant">
-    <div class="section-container">
-      <div class="section-header">
-        <h2 class="section-title">核心创新：AI语音助手</h2>
-        <p class="section-subtitle">语音交互零门槛，适老化设计更贴心</p>
-      </div>
-      <div class="ai-demo">
-        <div class="ai-demo-header">
-          <div class="ai-icon">🎤</div>
-          <div class="ai-header-text">
-            <h3>语音输入诉求，一键直达服务</h3>
-            <p>无需手动操作，方言也能精准识别（规划中支持四川话、重庆话等方言）</p>
-          </div>
-        </div>
-        <div class="ai-interaction">
-          <div class="ai-input">
-            <strong>用户语音输入：</strong>「我想咨询社区养老保险认证怎么办理？」
-          </div>
-          <div class="ai-reply">
-            <strong>AI语音回复：</strong>「已为您匹配养老保险认证服务，点击下方链接即可查看办理流程、所需材料及线上办理入口👇」
-            <a href="#" style="color: #e0f2fe; text-decoration: underline; display: inline-block; margin-top: 8px;">👉 养老保险认证服务专区</a>
-          </div>
-        </div>
-        <p class="ai-note">* 初版为静态展示，后续落地将开发真实语音识别、方言适配与页面跳转功能</p>
-      </div>
-    </div>
-  </section>
-  <!-- 行动号召 -->
-  <section class="cta">
-    <div class="cta-container">
-      <h2 class="cta-title">共建智慧社区，共享美好生活</h2>
-      <p class="cta-subtitle">我们致力于通过数字化手段，提升社区治理效率，增强居民幸福感与参与感。</p>
-      <div class="cta-buttons">
-        <a href="project.html" class="btn btn-primary btn-large">了解项目详情</a>
-      </div>
-    </div>
-  </section>
+    </section>
 </main>
+<!-- 返回顶部按钮 -->
+<div id="backToTop">↑</div>
 <!-- 页脚 -->
 <footer class="footer">
-  <div class="footer-container">
-    <div class="footer-brand">
-      <div class="brand-logo">
-        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="20" r="18" stroke="white" stroke-width="2"/>
-          <path d="M20 8L28 24H12L20 8Z" fill="white"/>
-          <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
-        </svg>
-      </div>
-      <div class="brand-text">
-        <span class="footer-brand-name">智治通</span>
-        <span class="footer-brand-slogan">川北川南一站式社区共治服务平台 | 小挑校赛初版</span>
-      </div>
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="brand-logo">
+                <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="white" stroke-width="2"/>
+                    <path d="M20 8L28 24H12L20 8Z" fill="white"/>
+                    <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="footer-brand-name">智治通</span>
+                <span class="footer-brand-slogan">川北川南一站式社区共治服务平台 | 小挑校赛初版</span>
+            </div>
+        </div>
+        <div class="footer-info">
+            <p>项目定位：川北川南一站式社区共治服务平台</p>
+            <p>团队优势：思政、法学、财务管理、计算机跨专业团队</p>
+        </div>
     </div>
-    <div class="footer-info">
-      <p>项目定位：川北川南一站式社区共治服务平台</p>
-      <p>团队优势：思政、法学、财务管理、计算机跨专业团队</p>
-    </div>
-  </div>
 </footer>
+
+<!-- 脚本 -->
+<script>
+    // 移动端汉堡菜单
+    const navToggle = document.getElementById('navToggle');
+    // 复制桌面菜单到移动端
+    const mobileMenu = document.createElement('ul');
+    mobileMenu.className = 'nav-menu-mobile';
+    mobileMenu.innerHTML = document.querySelector('.nav-menu').innerHTML;
+    document.querySelector('.nav-container').appendChild(mobileMenu);
+    navToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+    });
+
+    // AI交互展示
+    const aiInput = document.getElementById('aiInput');
+    const aiReply = document.getElementById('aiReply');
+    aiInput.addEventListener('click', () => {
+        aiReply.style.display = 'block';
+    });
+
+    // 返回顶部按钮
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+        backToTop.style.display = window.scrollY > 300 ? 'block' : 'none';
+    });
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
 </body>
 </html>
