@@ -269,6 +269,120 @@
             display: flex;
             justify-content: center;
             gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* ==================== 移动端响应式适配（修复所有适配问题） ==================== */
+        @media (max-width: 968px) {
+            /* Hero区域适配 */
+            .hero {
+                padding: 120px 16px 80px;
+                min-height: auto;
+            }
+            .hero-title {
+                font-size: 38px;
+            }
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            /* 五维生态适配：平板端3列 */
+            .ecosystem-visual {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+            .ecosystem {
+                padding: 80px 16px;
+            }
+            /* AI模块适配 */
+            .ai-demo {
+                padding: 24px;
+            }
+        }
+        @media (max-width: 640px) {
+            /* 全局防横向滚动 */
+            body {
+                overflow-x: hidden;
+            }
+            /* Hero区域适配：手机端 */
+            .hero {
+                padding: 100px 16px 60px;
+            }
+            .hero-title {
+                font-size: 28px;
+            }
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            .hero-cta {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .btn-secondary {
+                margin-left: 0;
+            }
+            /* 核心功能适配：手机端最小宽度缩小，自动1列 */
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .feature-card {
+                padding: 24px;
+            }
+            /* 五维生态适配：手机端2列 */
+            .ecosystem-visual {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            .ecosystem-node {
+                padding: 20px 12px;
+            }
+            .node-title {
+                font-size: 14px;
+            }
+            .node-desc {
+                font-size: 11px;
+            }
+            .ecosystem {
+                padding: 60px 16px;
+            }
+            /* 应用场景适配 */
+            .scenario-item {
+                padding: 20px 16px;
+                gap: 12px;
+            }
+            .scenario-number {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+            /* AI模块适配 */
+            .ai-section {
+                padding: 60px 16px;
+            }
+            .ai-demo {
+                padding: 20px 16px;
+            }
+            .ai-reply {
+                max-width: 100%;
+            }
+            /* CTA区域适配 */
+            .cta {
+                padding: 60px 16px;
+            }
+            .cta-title {
+                font-size: 28px;
+            }
+            .cta-subtitle {
+                font-size: 16px;
+            }
+            /* 通用Section适配 */
+            section {
+                padding: 60px 16px;
+            }
+            .section-title {
+                font-size: 28px;
+            }
         }
     </style>
 </head>
