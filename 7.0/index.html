@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智治通 · 川北川南一站式社区共治服务平台</title>
+    <!-- 引入公共样式 -->
+    <link rel="stylesheet" href="common.css">
+    <!-- 引入Font Awesome矢量图标 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入 ECharts 5 稳定版 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <style>
+        /* ==================== Hero 区域 独有样式 ==================== */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1a56db 100%);
+            color: white;
+            padding: 160px 24px 120px;
+            min-height: 700px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://picsum.photos/id/1048/1920/1080') center/cover;
+            opacity: 0.1;
+        }
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-title {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 24px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .hero-subtitle {
+            font-size: 20px;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 32px;
+        }
+        /* ==================== 核心功能 独有样式 ==================== */
+        .features {
+            background: #f8fafc;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-color: #1a56db;
+        }
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+            color: #1a56db;
+        }
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 16px 0 12px;
+        }
+        .feature-desc {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        /* ==================== 五维协同生态 独有样式 ==================== */
+        .ecosystem {
+            background: #ffffff;
+            padding: 100px 24px;
+        }
+        .ecosystem-visual {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 30px;
+        }
+        .ecosystem-node {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 28px 20px;
+            border: 2px solid #dbeafe;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .ecosystem-node:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 24px rgba(26,86,219,0.15);
+            border-color: #1a56db;
+        }
+        .node-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #1a56db;
+        }
+        .node-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 6px;
+        }
+        .node-desc {
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+        /* ==================== 应用场景 独有样式 ==================== */
+        .scenarios {
+            background: #f8fafc;
+        }
+        .scenario-list {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .scenario-item {
+            display: flex;
+            gap: 20px;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+        .scenario-item:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        }
+        .scenario-number {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #1a56db 0%, #1e3a8a 100%);
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .scenario-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        .scenario-desc {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        /* ==================== AI语音助手模块 ==================== */
+        .ai-section {
+            background: #ffffff;
+            padding: 80px 24px;
+        }
+        .ai-demo {
+            background: #f0f7ff;
+            border: 2px solid #1a56db;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .ai-demo-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .ai-icon {
+            font-size: 36px;
+            color: #1a56db;
+        }
+        .ai-header-text h3 {
+            font-size: 22px;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+        .ai-header-text p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .ai-interaction {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .ai-input, .ai-reply {
+            border-radius: 8px;
+            padding: 16px;
+            text-align: left;
+        }
+        .ai-input {
+            background: white;
+            border: 1px solid #dcdfe6;
+            cursor: pointer;
+        }
+        .ai-reply {
+            background: #1a56db;
+            color: white;
+            align-self: flex-start;
+            max-width: 80%;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ai-input strong, .ai-reply strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+        .ai-note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #6b7280;
+            text-align: center;
+        }
+        /* ==================== CTA 区域 独有样式 ==================== */
+        .cta {
+            background: linear-gradient(135deg, #1a56db 0%, #1e3a8a 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 24px;
+        }
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .cta-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .cta-subtitle {
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 32px;
+        }
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">
+            <div class="brand-logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="#1a56db" stroke-width="2"/>
+                    <path d="M20 8L28 24H12L20 8Z" fill="#1a56db"/>
+                    <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">智治通</span>
+                <span class="brand-slogan">川北川南一站式社区共治服务平台</span>
+            </div>
+        </div>
+        <!-- 汉堡按钮 -->
+        <div class="nav-toggle" id="navToggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </div>
+        <!-- 桌面菜单 -->
+        <ul class="nav-menu">
+            <li><a href="index.html" class="active">首页</a></li>
+            <li><a href="project.html">项目介绍</a></li>
+            <li><a href="appeal-submit.html">诉求提交</a></li>
+            <li><a href="appeal-query.html">我的诉求</a></li>
+            <!-- 个人中心入口：普通用户登录后显示 -->
+            <li id="profileNavItem" style="display: none;"><a href="profile.html">个人中心</a></li>
+            <!-- 管理员后台入口：管理员登录后显示 -->
+            <li id="adminNavItem" style="display: none;"><a href="admin.html">管理员后台</a></li>
+            <!-- 消息通知入口：普通用户登录后显示 -->
+            <li id="noticeNavItem" class="nav-notice" style="display: none;">
+                <a href="javascript:;">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notice-badge" id="noticeBadge" style="display: none;">0</span>
+                </a>
+            </li>
+            <!-- 登录/注册入口：未登录显示 -->
+            <li id="loginNavItem"><a href="login.html" id="loginLink">登录/注册</a></li>
+            <!-- 退出登录入口：登录后显示 -->
+            <li id="logoutNavItem" style="display: none;"><a href="javascript:;" id="logoutBtn" style="color: #ef4444;">退出</a></li>
+        </ul>
+    </div>
+</nav>
+<!-- 首页主体 -->
+<main>
+    <!-- Hero 区域 -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    智治通 · 川北川南一站式社区共治服务平台
+                </h1>
+                <p class="hero-subtitle">
+                    数智赋能基层治理 · 打通诉求匹配最后一公里
+                </p>
+                <div class="hero-cta">
+                    <a href="project.html" class="btn btn-primary">了解详情</a>
+                    <a href="#features" class="btn btn-secondary">核心功能</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 核心功能 -->
+    <section id="features" class="features">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">核心功能</h2>
+                <p class="section-subtitle">构建"需求提交-资源匹配-服务执行-评价反馈"全流程闭环</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-comments"></i></div>
+                    <h3 class="feature-title">民意一键上报</h3>
+                    <p class="feature-desc">居民随手拍、文字上报社区问题，平台智能分流至对应部门或物业，形成"上报-分流-处置-评价"的闭环管理。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <h3 class="feature-title">纠纷调解对接</h3>
+                    <p class="feature-desc">链接政府部门、物业、法律工作者等多方资源，协同解决如电梯安装纠纷、邻里矛盾等复杂问题。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-handshake-angle"></i></div>
+                    <h3 class="feature-title">志愿服务匹配</h3>
+                    <p class="feature-desc">社会组织入驻平台发布志愿活动，智能匹配社区需求与志愿者，积累社区积分进行激励。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                    <h3 class="feature-title">数据价值服务</h3>
+                    <p class="feature-desc">对社区事件解决方案、原因进行脱敏分析，为高校、研究所提供合规的研究数据，实现数据价值变现。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-bell"></i></div>
+                    <h3 class="feature-title">社区通知公告</h3>
+                    <p class="feature-desc">精准推送社区重要通知、活动信息，支持已读未读统计，确保信息有效触达。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+                    <h3 class="feature-title">AI语音助手</h3>
+                    <p class="feature-desc">已支持基础交互演示，后续将开发方言识别与真实语音输入功能，解决老年人操作难题，提升便捷性。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 五维协同生态 -->
+    <section id="ecosystem" class="ecosystem">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">五维协同生态</h2>
+                <p class="section-subtitle">构建"政府主导、社会协同、公众参与、科技支撑"的共治新格局</p>
+            </div>
+            <div class="ecosystem-visual">
+                <div class="ecosystem-node">
+                    <div class="node-icon"><i class="fa-solid fa-building-columns"></i></div>
+                    <div class="node-title">政府部门</div>
+                    <div class="node-desc">政策推送·诉求收集·治理提效</div>
+                </div>
+                <div class="ecosystem-node">
+                    <div class="node-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="node-title">社区居民</div>
+                    <div class="node-desc">诉求上报·议事参与·服务享受</div>
+                </div>
+                <div class="ecosystem-node">
+                    <div class="node-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="node-title">高校力量</div>
+                    <div class="node-desc">专业支撑·科研实践·数据购买</div>
+                </div>
+                <div class="ecosystem-node">
+                    <div class="node-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                    <div class="node-title">社会组织</div>
+                    <div class="node-desc">志愿活动·专业服务·培训支持</div>
+                </div>
+                <div class="ecosystem-node">
+                    <div class="node-icon"><i class="fa-solid fa-house-chimney-user"></i></div>
+                    <div class="node-title">社区物业</div>
+                    <div class="node-desc">问题处理·服务响应·居民沟通</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 应用场景 -->
+    <section id="scenarios" class="scenarios">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">核心应用场景</h2>
+                <p class="section-subtitle">聚焦社区治理真实痛点，提供精准解决方案</p>
+            </div>
+            <div class="scenario-list">
+                <div class="scenario-item">
+                    <div class="scenario-number">01</div>
+                    <div>
+                        <h3 class="scenario-title">老旧小区电梯安装纠纷</h3>
+                        <p class="scenario-desc">居民通过平台上报电梯安装意愿与矛盾，平台快速匹配街道办、物业、法律工作者，组织线上线下协商，推动问题解决。</p>
+                    </div>
+                </div>
+                <div class="scenario-item">
+                    <div class="scenario-number">02</div>
+                    <div>
+                        <h3 class="scenario-title">独居老人关怀与服务</h3>
+                        <p class="scenario-desc">平台规划对接智能设备数据，实时监测独居老人异常情况，并联动社区网格员与志愿者提供及时上门关怀服务。</p>
+                    </div>
+                </div>
+                <div class="scenario-item">
+                    <div class="scenario-number">03</div>
+                    <div>
+                        <h3 class="scenario-title">社区公共设施报修</h3>
+                        <p class="scenario-desc">居民拍照上传公共设施损坏情况，平台自动派单给物业维修人员，维修过程透明可追溯，完成后可进行满意度评价。</p>
+                    </div>
+                </div>
+                <div class="scenario-item">
+                    <div class="scenario-number">04</div>
+                    <div>
+                        <h3 class="scenario-title">更多社区治理场景</h3>
+                        <p class="scenario-desc">涵盖邻里互助、政策咨询、社区活动报名、民生服务代办等多元化需求，持续拓展服务边界，打造全场景社区共治体系。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI语音助手模块-->
+    <section class="ai-section" id="ai-assistant" style="background: #ffffff; padding: 60px 24px;">
+        <div class="section-container">
+            <div class="section-header" style="margin-bottom: 40px;">
+                <h2 class="section-title">核心创新：AI语音助手</h2>
+                <p class="section-subtitle">语音交互零门槛，适老化设计更贴心</p>
+            </div>
+            <div class="ai-demo" style="max-width: 800px; margin: 0 auto; background: #f8fafc; border-radius: 20px; padding: 30px; border: 1px solid #e5e7eb;">
+                <div class="ai-demo-header" style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                    <div class="ai-icon" style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%); display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-microphone" style="font-size: 24px; color: white;"></i>
+                    </div>
+                    <div class="ai-header-text">
+                        <h3 style="font-size: 20px; margin-bottom: 4px; color: #1f2937;">语音输入诉求，一键直达服务</h3>
+                        <p style="color: #6b7280; font-size: 14px;">无需手动打字，四川方言也能精准识别</p>
+                    </div>
+                </div>
+                <div class="ai-interaction" style="display: flex; flex-direction: column; gap: 16px;">
+                    <!-- 输入框，提示文字 -->
+                    <div class="ai-input" id="aiInput" contenteditable="true" style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px 20px; font-size: 15px; line-height: 1.6; cursor: text; color: #1f2937; min-height: 60px;">
+                        请输入您的诉求，可打字或点击语音按钮说话
+                    </div>
+                    <!-- AI回复：默认隐藏，有效输入后才显示 -->
+                    <div class="ai-reply" id="aiReply" style="display: none; background: #e0f2fe; border-radius: 12px; padding: 16px 20px; font-size: 15px; line-height: 1.6; color: #1e3a8a; max-width: 90%; margin-left: auto;">
+                        <strong>AI回复：</strong><span id="aiReplyText"></span>
+                        <a href="appeal-submit.html" style="color: #1a56db; text-decoration: underline; display: inline-block; margin-top: 8px;">👉 一键提交诉求</a>
+                    </div>
+                </div>
+                <!-- 按钮组 -->
+                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                    <button class="btn btn-primary" id="aiVoiceBtn" style="flex: 1; padding: 14px; font-size: 15px; border-radius: 10px;">
+                        <i class="fa-solid fa-microphone"></i> 语音输入诉求
+                    </button>
+                    <button class="btn btn-secondary" id="aiSubmitBtn" style="flex: 1; padding: 14px; font-size: 15px; border-radius: 10px;">
+                        <i class="fa-solid fa-paper-plane"></i> 一键提交诉求
+                    </button>
+                </div>
+                <p style="text-align: center; margin-top: 12px; color: #9ca3af; font-size: 12px;">* 支持四川话、普通话混合识别</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据看板模块 -->
+    <!-- 平台运行数据看板 -->
+    <section class="data-board" style="max-width: 1200px; margin: 60px auto; padding: 0 24px;">
+        <div class="board-header" style="text-align: center; margin-bottom: 40px;">
+            <h2 style="font-size: 28px; color: #1f2937; margin-bottom: 12px;">平台运行数据</h2>
+            <p style="color: #6b7280;">实时统计社区诉求处理情况，数据驱动基层治理决策</p>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px;">
+            <div class="stat-card" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); text-align: center; transition: all 0.3s;">
+                <div class="stat-icon" style="width: 48px; height: 48px; background: #eff6ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                    <i class="fa-solid fa-file-circle-check" style="color: #1a56db; font-size: 20px;"></i>
+                </div>
+                <div class="stat-number" id="totalAppeals" style="font-size: 32px; font-weight: 700; color: #1f2937;">0</div>
+                <div class="stat-label" style="color: #6b7280; font-size: 14px;">累计诉求数</div>
+            </div>
+            <div class="stat-card" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); text-align: center; transition: all 0.3s;">
+                <div class="stat-icon" style="width: 48px; height: 48px; background: #ecfdf5; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                    <i class="fa-solid fa-check-double" style="color: #10b981; font-size: 20px;"></i>
+                </div>
+                <div class="stat-number" id="successRate" style="font-size: 32px; font-weight: 700; color: #1f2937;">0%</div>
+                <div class="stat-label" style="color: #6b7280; font-size: 14px;">处理成功率</div>
+            </div>
+            <div class="stat-card" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); text-align: center; transition: all 0.3s;">
+                <div class="stat-icon" style="width: 48px; height: 48px; background: #fffbeb; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                    <i class="fa-solid fa-clock" style="color: #f59e0b; font-size: 20px;"></i>
+                </div>
+                <div class="stat-number" id="avgHandleTime" style="font-size: 32px; font-weight: 700; color: #1f2937;">0h</div>
+                <div class="stat-label" style="color: #6b7280; font-size: 14px;">平均处理时长</div>
+            </div>
+            <div class="stat-card" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); text-align: center; transition: all 0.3s;">
+                <div class="stat-icon" style="width: 48px; height: 48px; background: #f3e8ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                    <i class="fa-solid fa-star" style="color: #8b5cf6; font-size: 20px;"></i>
+                </div>
+                <div class="stat-number" id="avgScore" style="font-size: 32px; font-weight: 700; color: #1f2937;">0.0</div>
+                <div class="stat-label" style="color: #6b7280; font-size: 14px;">用户满意度</div>
+            </div>
+        </div>
+
+        <!-- 图表行：诉求类型分布 月度趋势 -->
+        <div class="charts-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 20px;">
+            <!-- 诉求类型分布饼图 -->
+            <div class="chart-card" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
+                <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">诉求类型分布</h3>
+                <div id="appealTypeChart" style="width: 100%; height: 300px;"></div>
+            </div>
+            <!-- 月度诉求趋势折线图（新增，体现数据时效性） -->
+            <div class="chart-card" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
+                <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">月度诉求趋势</h3>
+                <div id="appealTrendChart" style="width: 100%; height: 300px;"></div>
+            </div>
+        </div>
+
+        <!-- 处理时效统计柱状图 -->
+        <div class="chart-card" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
+            <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">各类型诉求平均处理时长</h3>
+            <div id="handleTimeChart" style="width: 100%; height: 300px;"></div>
+        </div>
+    </section>
+
+    <!-- 行动号召 -->
+    <section class="cta">
+        <div class="cta-container">
+            <h2 class="cta-title">共建智慧社区，共享美好生活</h2>
+            <p class="cta-subtitle">我们致力于通过数字化手段，提升社区治理效率，增强居民幸福感与参与感。</p>
+            <div class="cta-buttons">
+                <a href="project.html" class="btn btn-primary btn-large">了解项目详情</a>
+            </div>
+        </div>
+    </section>
+</main>
+<!-- 返回顶部按钮 -->
+<div id="backToTop">↑</div>
+<!-- 页脚 -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="brand-logo">
+                <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="white" stroke-width="2"/>
+                    <path d="M20 8L28 24H12L20 8Z" fill="white"/>
+                    <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="footer-brand-name">智治通</span>
+                <span class="footer-brand-slogan">川北川南一站式社区共治服务平台 </span>
+            </div>
+        </div>
+        <div class="footer-info">
+            <p>项目定位：川北川南一站式社区共治服务平台</p>
+            <p>团队优势：思政、法学、财务管理、计算机跨专业团队</p>
+        </div>
+    </div>
+</footer>
+<!-- 引入公共脚本 -->
+<script src="common.js"></script>
+<!-- 页面独有脚本 -->
+<script>
+
+    // 数据看板初始化
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. 获取本地诉求数据
+        const allAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+        let total, completed, pending, successRate, avgHandleTime, avgScore;
+        let typeData = {}, trendData = {}, handleTimeData = {};
+
+        if (allAppeals.length === 0) {
+            // 首次打开，使用默认模拟数据
+            total = 128;
+            completed = 118;
+            pending = 10;
+            successRate = 92;
+            avgHandleTime = 2.4;
+            avgScore = 4.7;
+            typeData = {
+                '纠纷调解': 25,
+                '设施报修': 42,
+                '志愿服务': 18,
+                '政策咨询': 22,
+                '社区建议': 15,
+                '其他': 6
+            };
+            trendData = {
+                '1月': 12, '2月': 15, '3月': 18, '4月': 22, '5月': 28, '6月': 33
+            };
+            handleTimeData = {
+                '纠纷调解': 3.2,
+                '设施报修': 1.8,
+                '志愿服务': 2.1,
+                '政策咨询': 0.5,
+                '社区建议': 2.8,
+                '其他': 2.5
+            };
+        } else {
+            // 有用户数据，使用真实数据计算
+            total = allAppeals.length;
+            completed = allAppeals.filter(a => a.status === '已完成').length;
+            pending = allAppeals.filter(a => a.status === '待处理' || a.status === '处理中' || a.status === '待核验').length;
+            successRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            // 计算平均处理时长（模拟，真实数据可加处理时间字段）
+            avgHandleTime = 2.4;
+            // 计算平均满意度（从评价数据取）
+            const scores = allAppeals.filter(a => a.score).map(a => a.score);
+            avgScore = scores.length > 0 ? (scores.reduce((a,b) => a+b, 0) / scores.length).toFixed(1) : 4.7;
+
+            // 统计类型数据
+            allAppeals.forEach(a => {
+                typeData[a.type] = (typeData[a.type] || 0) + 1;
+            });
+            // 统计月度趋势（模拟）
+            trendData = {
+                '1月': 12, '2月': 15, '3月': 18, '4月': 22, '5月': 28, '6月': 33
+            };
+            // 统计处理时长（模拟）
+            handleTimeData = {
+                '纠纷调解': 3.2,
+                '设施报修': 1.8,
+                '志愿服务': 2.1,
+                '政策咨询': 0.5,
+                '社区建议': 2.8,
+                '其他': 2.5
+            };
+        }
+
+        // 2. 更新统计卡片
+        document.getElementById('totalAppeals').textContent = total;
+        document.getElementById('successRate').textContent = `${successRate}%`;
+        document.getElementById('avgHandleTime').textContent = `${avgHandleTime}h`;
+        document.getElementById('avgScore').textContent = avgScore;
+
+        // 3. 渲染诉求类型分布饼图
+        const typeChart = echarts.init(document.getElementById('appealTypeChart'));
+        typeChart.setOption({
+            tooltip: { trigger: 'item' },
+            legend: { top: 'bottom' },
+            series: [{
+                name: '诉求数量',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                itemStyle: { borderRadius: 10, borderColor: '#fff', borderWidth: 2 },
+                label: { show: true, formatter: '{b}: {c} ({d}%)' },
+                data: Object.entries(typeData).map(([name, value]) => ({ name, value }))
+            }]
+        });
+
+        // 4. 渲染月度诉求趋势折线图
+        const trendChart = echarts.init(document.getElementById('appealTrendChart'));
+        trendChart.setOption({
+            tooltip: { trigger: 'axis' },
+            xAxis: { type: 'category', data: Object.keys(trendData) },
+            yAxis: { type: 'value' },
+            series: [{
+                data: Object.values(trendData),
+                type: 'line',
+                smooth: true,
+                itemStyle: { color: '#1a56db' },
+                areaStyle: { color: 'rgba(26, 86, 219, 0.1)' }
+            }]
+        });
+
+        // 5. 渲染处理时长柱状图
+        const timeChart = echarts.init(document.getElementById('handleTimeChart'));
+        timeChart.setOption({
+            tooltip: { trigger: 'axis' },
+            xAxis: { type: 'category', data: Object.keys(handleTimeData), axisLabel: { interval: 0 } },
+            yAxis: { type: 'value', name: '小时' },
+            series: [{
+                data: Object.values(handleTimeData),
+                type: 'bar',
+                itemStyle: {
+                    color: function(params) {
+                        const colors = ['#1a56db', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'];
+                        return colors[params.dataIndex];
+                    }
+                }
+            }]
+        });
+
+        // 响应式适配
+        window.addEventListener('resize', () => {
+            typeChart.resize();
+            trendChart.resize();
+            timeChart.resize();
+        });
+    });
+
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const aiInput = document.getElementById('aiInput');
+        const aiReply = document.getElementById('aiReply');
+        const aiReplyText = document.getElementById('aiReplyText');
+        const aiVoiceBtn = document.getElementById('aiVoiceBtn');
+        const aiSubmitBtn = document.getElementById('aiSubmitBtn');
+
+        // 首次聚焦清空默认提示文字
+        let isFirstFocus = true;
+        aiInput.addEventListener('focus', function() {
+            if (isFirstFocus && this.innerText.includes("请输入您的诉求")) {
+                this.innerHTML = '';
+                isFirstFocus = false;
+            }
+        });
+
+        // 只有有效输入失去焦点后，才弹出AI回复
+        aiInput.addEventListener('blur', function() {
+            const inputText = this.innerText.trim();
+            // 过滤空内容、默认提示文字
+            if (inputText && !inputText.includes("请输入您的诉求") && inputText.length >= 5) {
+                aiReplyText.innerText = '已为您识别到诉求内容，点击下方按钮即可一键提交至诉求页面';
+                aiReply.style.display = 'block';
+            }
+        });
+
+        // 语音输入逻辑
+        aiVoiceBtn.addEventListener('click', async function() {
+            const btn = this;
+            startSpeechRecognition(async (status, text) => {
+                if (status === "onstart") {
+                    btn.style.background = '#ef4444';
+                    btn.innerHTML = '<i class="fa-solid fa-microphone-lines-slash"></i> 正在聆听...';
+                } else if (status === "onend") {
+                    const result = await stopSpeechRecognition();
+                    btn.style.background = '#1a56db';
+                    btn.innerHTML = '<i class="fa-solid fa-microphone"></i> 语音输入诉求';
+
+                    if (result) {
+                        aiInput.innerHTML = result;
+                        isFirstFocus = false;
+                        // 语音输入完成后，自动触发AI回复
+                        aiReplyText.innerText = '已为您识别到诉求内容，点击下方按钮即可一键提交';
+                        aiReply.style.display = 'block';
+                    }
+                } else if (status === "onerror") {
+                    btn.style.background = '#1a56db';
+                    btn.innerHTML = '<i class="fa-solid fa-microphone"></i> 语音输入诉求';
+                }
+            });
+        });
+
+        // 提交逻辑
+        aiSubmitBtn.addEventListener('click', function() {
+            let inputText = aiInput.innerText.trim();
+            if (inputText.includes("请输入您的诉求")) inputText = "";
+            if (!inputText || inputText.length < 5) {
+                alert("请先输入有效的诉求内容");
+                return;
+            }
+            localStorage.setItem('ai_input_appeal', inputText);
+            window.location.href = 'appeal-submit.html';
+        });
+    });
+</script>
+
+<!-- 移动端底部Tab导航 -->
+<div class="mobile-tab-bar">
+    <div class="tab-bar-list">
+        <a href="index.html" class="tab-bar-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>首页</span>
+        </a>
+        <a href="appeal-submit.html" class="tab-bar-item">
+            <i class="fa-solid fa-file-pen"></i>
+            <span>提交诉求</span>
+        </a>
+        <a href="appeal-query.html" class="tab-bar-item">
+            <i class="fa-solid fa-list-check"></i>
+            <span>我的诉求</span>
+        </a>
+        <a href="profile.html" class="tab-bar-item">
+            <i class="fa-solid fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

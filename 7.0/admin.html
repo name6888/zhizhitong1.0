@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员后台 - 智治通社区共治平台</title>
+    <!-- 引入公共样式 -->
+    <link rel="stylesheet" href="common.css">
+    <!-- 引入 ECharts 5 稳定版 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <!-- 引入Font Awesome矢量图标 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ==================== 页面独有基础样式 ==================== */
+        body {
+            padding-top: 80px;
+        }
+        /* ==================== 页面标题区域 独有样式 ==================== */
+        .page-header {
+            text-align: center;
+            padding: 40px 24px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1a56db 100%);
+            color: white;
+            margin-bottom: 40px;
+        }
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .page-desc {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        /* ==================== 管理员信息栏 独有样式 ==================== */
+        .admin-bar {
+            max-width: 1200px;
+            margin: 0 auto 32px;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            color: #374151;
+        }
+        .admin-info i {
+            color: #1a56db;
+            font-size: 20px;
+        }
+        .logout-btn {
+            padding: 8px 16px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+        /* ==================== 诉求列表容器 独有样式 ==================== */
+        .appeal-container {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 24px;
+        }
+        /* ==================== 空状态 独有样式 ==================== */
+        .empty-state {
+            text-align: center;
+            padding: 80px 24px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .empty-icon {
+            font-size: 72px;
+            color: #e5e7eb;
+            margin-bottom: 24px;
+        }
+        .empty-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+        .empty-desc {
+            font-size: 15px;
+            color: #6b7280;
+        }
+        /* ==================== 诉求列表 独有样式 ==================== */
+        .appeal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        /* ==================== 诉求项卡片 独有样式 ==================== */
+        .appeal-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+        .appeal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+        /* 状态边框颜色 */
+        .appeal-card.pending { border-left-color: #1a56db; }
+        .appeal-card.processing { border-left-color: #f59e0b; }
+        .appeal-card.completed { border-left-color: #10b981; }
+        /* ==================== 诉求头部 独有样式 ==================== */
+        .appeal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .appeal-basic {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .appeal-type {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .appeal-type i {
+            color: #1a56db;
+        }
+        .appeal-meta {
+            display: flex;
+            gap: 24px;
+            font-size: 13px;
+            color: #9ca3af;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .appeal-status {
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background: #eff6ff;
+            color: #1a56db;
+        }
+        .status-processing {
+            background: #fffbeb;
+            color: #f59e0b;
+        }
+        .status-completed {
+            background: #ecfdf5;
+            color: #10b981;
+        }
+        /* ==================== 诉求内容 独有样式 ==================== */
+        .appeal-content {
+            margin-bottom: 24px;
+        }
+        .appeal-desc {
+            font-size: 15px;
+            color: #4b5563;
+            line-height: 1.8;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .appeal-desc.expanded {
+            -webkit-line-clamp: unset;
+            overflow: visible;
+        }
+        /* 图片预览 */
+        .appeal-images {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .appeal-image-item {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .appeal-image-item:hover {
+            transform: scale(1.05);
+            border-color: #1a56db;
+        }
+        .appeal-image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* ==================== 管理员操作区==================== */
+        .admin-actions {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #f3f4f6;
+        }
+        .action-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 16px;
+            align-items: flex-end;
+        }
+        .action-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        .action-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        .action-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1f2937;
+            transition: all 0.3s;
+        }
+        .action-select:focus {
+            outline: none;
+            border-color: #1a56db;
+            box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.1);
+        }
+        .action-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1f2937;
+            min-height: 80px;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+        .action-textarea:focus {
+            outline: none;
+            border-color: #1a56db;
+            box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.1);
+        }
+        .submit-btn {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+        }
+        /* ==================== 处理结果区域 独有样式 ==================== */
+        .appeal-result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 16px;
+            display: none;
+        }
+        .appeal-result.show {
+            display: block;
+        }
+        .result-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .result-title i {
+            color: #10b981;
+        }
+        .result-content {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+        /* ==================== 响应式独有适配 ==================== */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 28px;
+            }
+            .admin-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .appeal-card {
+                padding: 24px;
+            }
+            .appeal-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .appeal-type {
+                font-size: 16px;
+            }
+            .appeal-meta {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .action-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .action-item {
+                min-width: unset;
+            }
+            .appeal-image-item {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+
+        /* 筛选栏美化样式 */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+            padding: 24px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 160px;
+        }
+        .filter-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+        .filter-bar input,
+        .filter-bar select {
+            padding: 10px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1f2937;
+            transition: all 0.3s;
+            outline: none;
+        }
+        .filter-bar input:focus,
+        .filter-bar select:focus {
+            border-color: #1a56db;
+            box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.1);
+        }
+        .filter-bar input {
+            min-width: 220px;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+            margin-left: auto;
+        }
+        .filter-btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+        .search-btn {
+            background: #1a56db;
+            color: white;
+        }
+        .search-btn:hover {
+            background: #1e40af;
+        }
+        .reset-btn {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        .reset-btn:hover {
+            background: #e5e7eb;
+        }
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+            }
+            .filter-buttons {
+                margin-left: 0;
+                justify-content: flex-end;
+            }
+        }
+
+
+        /* 图片预览弹窗优化样式 */
+
+        .modal-content {
+            position: relative;
+            z-index: 1;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .modal-img {
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+
+        /* ==================== 图片预览弹窗==================== */
+        .image-modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(0, 0, 0, 0.92) !important;
+            z-index: 99999 !important;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .image-modal.show {
+            display: flex !important;
+        }
+        .modal-content {
+            max-width: 90vw !important;
+            max-height: 90vh !important;
+            z-index: 100000 !important;
+            position: relative !important;
+            /* 缩放拖拽核心 */
+            touch-action: none;
+            user-select: none !important;
+        }
+        .modal-img {
+            max-width: 100% !important;
+            max-height: 90vh !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            display: block !important;
+            /* 缩放过渡效果 */
+            transition: transform 0.1s ease;
+            user-select: none !important;
+            pointer-events: none;
+        }
+        /* 关闭按钮：超大超明显，不会找不到 */
+        .modal-close-btn {
+            position: fixed !important;
+            top: 20px !important;
+            right: 20px !important;
+            width: 50px !important;
+            height: 50px !important;
+            background: #ffffff !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 24px !important;
+            color: #333333 !important;
+            cursor: pointer !important;
+            z-index: 100001 !important;
+            border: none !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
+            transition: all 0.2s ease !important;
+        }
+        .modal-close-btn:hover {
+            background: #f0f0f0 !important;
+            transform: scale(1.05) !important;
+        }
+        /* 左右切换按钮：超大，手机也能点 */
+        .modal-prev-btn, .modal-next-btn {
+            position: fixed !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            width: 60px !important;
+            height: 60px !important;
+            background: rgba(255, 255, 255, 0.3) !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #ffffff !important;
+            font-size: 30px !important;
+            cursor: pointer !important;
+            z-index: 100001 !important;
+            border: none !important;
+            transition: all 0.2s ease !important;
+        }
+        .modal-prev-btn {
+            left: 20px !important;
+        }
+        .modal-next-btn {
+            right: 20px !important;
+        }
+        .modal-prev-btn:hover, .modal-next-btn:hover {
+            background: rgba(255, 255, 255, 0.6) !important;
+        }
+        /* 单图时隐藏切换按钮 */
+        .modal-prev-btn.hidden, .modal-next-btn.hidden {
+            display: none !important;
+        }
+
+        /* 通知跳转高亮动画 */
+        @keyframes highlightCard {
+            0% { box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.3); }
+            50% { box-shadow: 0 0 0 6px rgba(26, 86, 219, 0.6); }
+            100% { box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.3); }
+        }
+        .highlight-animation {
+            animation: highlightCard 1.2s ease-in-out 2;
+            z-index: 10;
+        }
+
+    </style>
+
+    <!--引入SheetJS库-->
+    <script src="https://cdn.bootcdn.net/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+</head>
+<body>
+<!-- 导航栏 -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="nav-brand">
+            <div class="brand-logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="#1a56db" stroke-width="2"/>
+                    <path d="M20 8L28 24H12L20 8Z" fill="#1a56db"/>
+                    <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">智治通</span>
+                <span class="brand-slogan">川北川南一站式社区共治服务平台</span>
+            </div>
+        </a>
+        <!-- 汉堡按钮 -->
+        <div class="nav-toggle" id="navToggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </div>
+        <!-- 桌面菜单 -->
+        <ul class="nav-menu">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="project.html">项目介绍</a></li>
+            <li><a href="appeal-submit.html">诉求提交</a></li>
+            <li><a href="appeal-query.html">我的诉求</a></li>
+            <li><a href="admin.html" class="active">管理员后台</a></li>
+            <li id="loginNavItem"><a href="login.html" id="loginLink">登录/注册</a></li>
+            <li id="logoutNavItem" style="display: none;"><a href="javascript:;" id="logoutBtn" style="color: #ef4444;">退出</a></li>
+        </ul>
+    </div>
+</nav>
+<!-- 页面标题 -->
+<div class="page-header">
+    <h1 class="page-title">管理员后台</h1>
+    <p class="page-desc">查看所有用户诉求，更新处理状态，添加处理结果</p>
+</div>
+<!-- 管理员信息栏 -->
+<div class="admin-bar">
+    <div class="admin-info">
+        <i class="fa-solid fa-user-shield"></i>
+        <span>当前登录：管理员账号</span>
+    </div>
+
+    <!-- 管理员消息通知按钮 -->
+    <div style="position: relative; margin-right: 12px;">
+        <button id="adminNoticeBtn" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px; border-radius: 8px; position: relative;">
+            <i class="fa-solid fa-bell"></i> 消息通知
+            <!-- 未读小红点 -->
+            <span id="noticeBadge" style="position: absolute; top: -6px; right: -6px; background: #ef4444; color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; display: none;">0</span>
+        </button>
+
+        <!-- 下拉消息列表 -->
+        <div id="noticePanel" style="position: absolute; top: 50px; right: 0; width: 380px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); z-index: 999; display: none; max-height: 450px; overflow: hidden;">
+            <!-- 消息头部 -->
+            <div style="padding: 12px 16px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="margin: 0; font-size: 15px; font-weight: 600; color: #1f2937;">管理员通知</h4>
+                <button id="readAllBtn" style="border: none; background: none; color: #1a56db; font-size: 13px; cursor: pointer;">全部已读</button>
+            </div>
+            <!-- 消息列表容器 -->
+            <div id="noticeList" style="max-height: 380px; overflow-y: auto;">
+                <!-- 空状态 -->
+                <div id="noticeEmpty" style="padding: 40px 20px; text-align: center; color: #9ca3af; font-size: 14px;">
+                    <i class="fa-solid fa-inbox" style="font-size: 30px; margin-bottom: 12px; display: block;"></i>
+                    暂无通知消息
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 代居民提交诉求 -->
+    <button class="btn btn-primary" style="margin-right: 12px; padding: 8px 16px; font-size: 14px; border-radius: 8px;" onclick="adminSubmitAppeal()">
+        <i class="fa-solid fa-user-plus"></i> 代居民提交
+    </button>
+
+    <!--导出按钮 -->
+    <button id="exportExcelBtn" class="btn btn-primary" style="margin-right: 12px; padding: 8px 16px; font-size: 14px; border-radius: 8px;">
+        <i class="fa-solid fa-download"></i> 导出Excel
+    </button>
+
+    <button class="logout-btn" onclick="adminLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        退出登录
+    </button>
+</div>
+
+<!-- 管理员数据统计模块 -->
+<section class="admin-stats" style="max-width: 1200px; margin: 0 auto 40px; padding: 0 24px;">
+    <div class="board-header" style="text-align: center; margin-bottom: 40px;">
+        <h2 style="font-size: 24px; color: #1f2937; margin-bottom: 12px;">诉求数据统计</h2>
+        <p style="color: #6b7280;">按类型、状态分析诉求数据，辅助管理决策</p>
+    </div>
+    <div class="charts-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+        <!-- 诉求类型分布饼图 -->
+        <div class="chart-card" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
+            <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">诉求类型分布</h3>
+            <div id="adminTypeChart" style="width: 100%; height: 300px;"></div>
+        </div>
+        <!-- 诉求状态统计柱状图 -->
+        <div class="chart-card" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
+            <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">诉求状态统计</h3>
+            <div id="adminStatusChart" style="width: 100%; height: 300px;"></div>
+        </div>
+    </div>
+</section>
+
+
+<!-- 诉求列表容器 -->
+<div class="appeal-container">
+
+    <!-- 诉求筛选栏 -->
+    <div class="filter-bar">
+        <div class="filter-item">
+            <label class="filter-label" for="searchInput">关键词搜索</label>
+            <input type="text" id="searchInput" placeholder="搜索诉求编号/内容/联系人">
+        </div>
+        <div class="filter-item">
+            <label class="filter-label" for="filterType">诉求类型</label>
+            <select id="filterType">
+                <option value="">全部类型</option>
+                <option value="设施报修">设施报修</option>
+                <option value="纠纷调解">纠纷调解</option>
+                <option value="政策咨询">政策咨询</option>
+                <option value="社区建议">社区建议</option>
+                <option value="志愿服务">志愿服务</option>
+                <!-- 新增古建筑保护类型（贴合大赛主题） -->
+                <option value="古建筑保护">古建筑保护</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label class="filter-label" for="filterStatus">处理状态</label>
+            <select id="filterStatus">
+                <option value="">全部状态</option>
+                <option value="待处理">待受理</option>
+                <option value="处理中">处理中</option>
+                <option value="待核验">待核验</option>
+                <option value="已完成">已完成</option>
+            </select>
+        </div>
+        <div class="filter-buttons">
+            <button class="filter-btn search-btn" onclick="filterAppeals()">
+                <i class="fa-solid fa-magnifying-glass"></i> 搜索
+            </button>
+            <button class="filter-btn reset-btn" onclick="resetFilter()">
+                <i class="fa-solid fa-arrows-rotate"></i> 重置
+            </button>
+        </div>
+    </div>
+
+    <!-- 空状态（无诉求时显示） -->
+    <div class="empty-state" id="emptyState">
+        <div class="empty-icon">
+            <i class="fa-solid fa-file-invoice"></i>
+        </div>
+        <h3 class="empty-title">暂无用户提交的诉求</h3>
+        <p class="empty-desc">当用户提交诉求后，将在这里显示并可进行处理</p>
+    </div>
+    <!-- 诉求列表（有诉求时显示） -->
+    <div class="appeal-list" id="appealList" style="display: none;">
+        <!-- 诉求卡片将通过JS动态生成 -->
+    </div>
+</div>
+
+
+
+<!-- ==================== 用户意见反馈管理（折叠面板） ==================== -->
+<div class="appeal-container" style="margin-top: 30px;">
+    <div class="appeal-card" style="padding: 24px;">
+        <!-- 折叠头部 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleFeedbackPanel()">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-comment-dots" style="color:#1a56db; font-size:18px;"></i>
+                <h3 style="margin:0; font-size:18px; font-weight:600;">用户意见反馈管理</h3>
+                <span id="feedbackBadge" style="background:#ef4444; color:#fff; font-size:12px; padding:2px 8px; border-radius:12px; display:none;">待处理</span>
+            </div>
+            <i class="fa-solid fa-chevron-down" id="feedbackArrow" style="transition:0.3s;"></i>
+        </div>
+
+        <!-- 折叠内容（默认隐藏） -->
+        <div id="feedbackPanel" style="display:none; margin-top:20px;">
+            <!-- 反馈筛选 -->
+            <div class="filter-bar" style="padding:16px; margin-bottom:16px;">
+                <div class="filter-item">
+                    <label class="filter-label">处理状态</label>
+                    <select id="feedbackStatusFilter" class="action-select">
+                        <option value="">全部</option>
+                        <option value="待处理">待处理</option>
+                        <option value="处理中">处理中</option>
+                        <option value="已完成">已完成</option>
+                    </select>
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn search-btn" onclick="renderFeedbackList()">筛选</button>
+                    <button class="filter-btn reset-btn" onclick="resetFeedbackFilter()">重置</button>
+                </div>
+            </div>
+
+            <!-- 空状态 -->
+            <div class="empty-state" id="feedbackEmpty" style="padding:40px 20px; display:none;">
+                <div class="empty-icon"><i class="fa-solid fa-inbox"></i></div>
+                <h3 class="empty-title">暂无用户反馈</h3>
+                <p class="empty-desc">用户提交意见后会在这里显示</p>
+            </div>
+
+            <!-- 反馈列表 -->
+            <div class="appeal-list" id="feedbackList" style="gap:16px;"></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 管理员新消息Toast弹窗 -->
+<div id="newMsgToast" style="position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%); color: white; padding: 16px 20px; border-radius: 12px; box-shadow: 0 8px 24px rgba(26, 86, 219, 0.3); z-index: 9999; display: none; align-items: center; gap: 12px; cursor: pointer; transition: all 0.3s ease; max-width: 360px;">
+    <i class="fa-solid fa-bell" style="font-size: 18px;"></i>
+    <div style="flex: 1;">
+        <div id="toastTitle" style="font-weight: 600; font-size: 14px; margin-bottom: 2px;">新消息通知</div>
+        <div id="toastContent" style="font-size: 13px; opacity: 0.9;">您有一条新的管理员通知</div>
+    </div>
+</div>
+
+<!-- 页脚 -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="brand-logo">
+                <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="white" stroke-width="2"/>
+                    <path d="M20 8L28 24H12L20 8Z" fill="white"/>
+                    <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="footer-brand-name">智治通</span>
+                <span class="footer-brand-slogan">川北川南一站式社区共治服务平台 </span>
+            </div>
+        </div>
+        <div class="footer-info">
+            <p>项目定位：川北川南一站式社区共治服务平台</p>
+            <p>团队优势：思政、法学、财务管理、计算机跨专业团队</p>
+        </div>
+    </div>
+</footer>
+<!-- 引入公共脚本 -->
+<script src="common.js"></script>
+<!-- 页面独有脚本 -->
+<script>
+
+    // 权限拦截：居民禁止访问管理员后台
+    checkUserBanAdminPage();
+
+    // 管理员登录校验
+    window.onload = function() {
+        // 居民禁止访问管理员后台
+        if (userBanAdminPage()) return;
+        // 管理员登录校验
+        const isAdminFlag = localStorage.getItem('is_admin');
+        const loginLink = document.getElementById('loginLink');
+        if (!isAdminFlag || isAdminFlag !== 'true') {
+            alert('请以管理员身份登录');
+            window.location.href = 'login.html';
+            return;
+        }
+        loginLink.innerHTML = '<i class="fa-solid fa-user-shield"></i> 管理员';
+        loginLink.style.pointerEvents = 'none';
+        loginLink.style.color = '#1a56db';
+        loadAllAppeals();
+        initAdminCharts();
+    };
+
+    // 单独封装图表初始化函数，避免重复执行
+    function initAdminCharts() {
+        // 获取本地诉求数据
+        const allAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+        // 渲染诉求类型分布饼图
+        const typeData = {};
+        allAppeals.forEach(a => {
+            typeData[a.type] = (typeData[a.type] || 0) + 1;
+        });
+        const typeChartDom = document.getElementById('adminTypeChart');
+        const typeChart = echarts.init(typeChartDom);
+        typeChart.setOption({
+            tooltip: { trigger: 'item' },
+            legend: { top: 'bottom' },
+            series: [{
+                type: 'pie',
+                radius: ['40%', '70%'],
+                data: Object.entries(typeData).map(([name, value]) => ({ name, value }))
+            }]
+        });
+        // 渲染诉求状态统计柱状图
+        const statusData = {
+            '待受理': allAppeals.filter(a => a.status === '待处理').length,
+            '处理中': allAppeals.filter(a => a.status === '处理中').length,
+            '待核验': allAppeals.filter(a => a.status === '待核验').length,
+            '已完成': allAppeals.filter(a => a.status === '已完成').length
+        };
+        const statusChartDom = document.getElementById('adminStatusChart');
+        const statusChart = echarts.init(statusChartDom);
+        statusChart.setOption({
+            tooltip: { trigger: 'axis' },
+            xAxis: { type: 'category', data: Object.keys(statusData), axisLabel: { interval: 0 } },
+            yAxis: { type: 'value' },
+            series: [{
+                type: 'bar',
+                data: Object.values(statusData),
+                itemStyle: {
+                    color: function(params) {
+                        const colors = ['#1a56db', '#f59e0b', '#ea580c', '#10b981'];
+                        return colors[params.dataIndex];
+                    }
+                }
+            }]
+        });
+        // 响应式适配
+        window.addEventListener('resize', () => {
+            typeChart.resize();
+            statusChart.resize();
+        });
+    }
+
+    // 管理员退出登录
+    function adminLogout() {
+        localStorage.removeItem('is_admin');
+        localStorage.removeItem('is_login');
+        localStorage.removeItem('current_user');
+        alert('退出登录成功');
+        window.location.href = 'login.html';
+    }
+
+    // 加载所有用户诉求
+    function loadAllAppeals() {
+        // 从LocalStorage获取所有诉求
+        let allAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+
+        // 筛选逻辑
+        const keyword = document.getElementById('searchInput')?.value.toLowerCase() || '';
+        const type = document.getElementById('filterType')?.value || '';
+        const status = document.getElementById('filterStatus')?.value || '';
+
+        allAppeals = allAppeals.filter(item => {
+            const matchKey = !keyword
+                || (item.code||'').toLowerCase().includes(keyword)
+                || (item.desc||'').toLowerCase().includes(keyword)
+                || (item.phone||'').includes(keyword);
+            const matchType = !type || item.type === type;
+            const matchStatus = !status || item.status === status;
+            return matchKey && matchType && matchStatus;
+        });
+        const emptyState = document.getElementById('emptyState');
+        const appealList = document.getElementById('appealList');
+
+        // 无诉求：显示空状态
+        if (allAppeals.length === 0) {
+            emptyState.style.display = 'block';
+            appealList.style.display = 'none';
+            return;
+        }
+        // 有诉求：显示列表，按提交时间倒序排列（最新的在前）
+        emptyState.style.display = 'none';
+        appealList.style.display = 'flex';
+        allAppeals.sort((a, b) => new Date(b.submitTime) - new Date(a.submitTime));
+        // 生成诉求卡片
+        appealList.innerHTML = '';
+        allAppeals.forEach((appeal, index) => {
+            const appealCard = document.createElement('div');
+            // 根据状态设置卡片类名
+            let statusClass = '';
+            let statusText = '';
+            let statusTagClass = '';
+            switch(appeal.status) {
+                case '待处理':
+                    statusClass = 'pending';
+                    statusText = '待受理';
+                    statusTagClass = 'status-pending';
+                    break;
+                case '处理中':
+                    statusClass = 'processing';
+                    statusText = '处理中';
+                    statusTagClass = 'status-processing';
+                    break;
+                case '待核验':
+                    statusClass = 'processing';
+                    statusText = '待核验';
+                    statusTagClass = 'status-processing';
+                    break;
+                case '已完成':
+                    statusClass = 'completed';
+                    statusText = '已完成';
+                    statusTagClass = 'status-completed';
+                    break;
+                default:
+                    statusClass = 'pending';
+                    statusText = '待受理';
+                    statusTagClass = 'status-pending';
+            }
+
+            // 生成图片预览HTML
+            let imagesHtml = '';
+            if (appeal.images && appeal.images.length > 0) {
+                imagesHtml = `<div class="appeal-images">`;
+                appeal.images.forEach((img, imgIndex) => {
+                    imagesHtml += `
+                <div class="appeal-image-item">
+                    <img src="${img}" alt="诉求图片${imgIndex+1}" class="previewable-img">
+                </div>
+            `;
+                });
+                imagesHtml += `</div>`;
+            }
+
+            // 生成处理结果HTML（仅已完成显示）
+            let resultHtml = '';
+            if (appeal.status === '已完成' && appeal.result) {
+                resultHtml = `
+                        <div class="appeal-result show">
+                            <div class="result-title">
+                                <i class="fa-solid fa-check-circle"></i> 处理结果
+                            </div>
+                            <div class="result-content">${appeal.result}</div>
+                        </div>
+                    `;
+            }
+            // 诉求卡片HTML
+            appealCard.className = `appeal-card ${statusClass}`;
+            appealCard.innerHTML = `
+                    <div class="appeal-header">
+                        <div class="appeal-basic">
+                            <div class="appeal-type">
+                                <i class="fa-solid fa-tag"></i> ${appeal.type}
+                            </div>
+                            <div class="appeal-meta">
+                                <div class="meta-item">
+                                    <i class="fa-solid fa-id-card"></i>
+                                    <span>诉求编号：${appeal.code || '无'}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fa-solid fa-user"></i>
+                                    <span>提交人：${appeal.phone.slice(0,3)}****${appeal.phone.slice(7)}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fa-solid fa-id-card"></i>
+                                    <span>诉求ID：${appeal.id}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="appeal-status ${statusTagClass}">
+                            ${statusText}
+                        </div>
+                    </div>
+                    <div class="appeal-content">
+                        <div class="appeal-desc" onclick="toggleDescExpand(this)">
+                            ${appeal.desc}
+                        </div>
+                        ${imagesHtml}
+                    </div>
+                    ${resultHtml}
+
+                    <!-- 居民评价展示（当已完成才显示） -->
+${appeal.status === '已完成' ? `
+<div class="appeal-result show" style="background: #f0fdf4; border-left: 4px solid #10b981; margin-top: 16px;">
+    <div class="result-title">
+        <i class="fa-solid fa-star"></i> 居民评价
+    </div>
+    <div class="result-content" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <span style="color: #f59e0b; font-size: 16px;">
+            ${Array.from({length: parseInt(appeal.score)}, () => '<i class="fa-solid fa-star"></i>').join('')}
+            ${Array.from({length: 5 - parseInt(appeal.score)}, () => '<i class="fa-solid fa-star" style="color:#d1d5db;"></i>').join('')}
+        </span>
+        <span style="font-weight: 600;">${appeal.score || '未'}星评价</span>
+    </div>
+    <div class="result-content">
+        <strong>评价建议：</strong>${appeal.scoreRemark || '暂无评价建议'}
+    </div>
+    <div class="result-content" style="margin-top: 8px; font-size: 12px; color: #6b7280;">
+        核验时间：${appeal.verifyTime || '未知'} | 核验结果：${appeal.verifyResult === '通过' ? '核验通过' : '驳回'}
+    </div>
+</div>
+` : ''}
+
+
+<!-- 管理员操作区：已完成状态 隐藏，不可修改 -->
+<div class="admin-actions" style="${appeal.status === '已完成' ? 'display: none;' : ''}">
+    <div class="action-group">
+    <div class="action-item">
+        <label class="action-label">处理状态</label>
+        <select class="action-select" id="statusSelect-${index}" data-appeal-id="${appeal.id}">
+           <option value="待处理" ${appeal.status === '待处理' ? 'selected' : ''}>待受理</option>
+           <option value="处理中" ${appeal.status === '处理中' ? 'selected' : ''}>处理中</option>
+           <option value="待核验" ${appeal.status === '待核验' ? 'selected' : ''}>待核验（提交办结）</option>
+           <option value="驳回重办" ${appeal.status === '驳回重办' ? 'selected' : ''}>驳回重办（退回处理中）</option>
+        </select>
+    </div>
+    <!-- AI智能辅助区：整合两个AI按钮，统一美观 -->
+    <div class="action-item" style="min-width: 240px;">
+        <label class="action-label">AI智能辅助</label>
+        <div style="display: flex; gap: 8px;">
+        <!-- 左：一键分派 -->
+           <button type="button" class="btn btn-secondary" style="flex:1;" id="aiDispatchBtn-${index}" onclick="aiAutoDispatch(${index}, '${appeal.type}')">
+             <i class="fa-solid fa-robot"></i> 一键分派
+           </button>
+        <!-- 右：生成回复 -->
+           <button type="button" class="btn btn-secondary" style="flex:1;" id="aiReplyBtn-${index}" onclick="generateAiReply(${index}, '${appeal.id}')">
+             <i class="fa-solid fa-robot"></i> 生成回复
+           </button>
+    </div>
+</div>
+</div>
+
+<!-- 分派信息组：部门、处置人、备注 -->
+<div class="action-group">
+    <div class="action-item">
+        <label class="action-label">处置部门/单位</label>
+        <select class="action-select" id="handlerDept-${index}">
+           <option value="">请选择处置部门</option>
+           <option value="社区物业维修组">社区物业维修组</option>
+           <option value="社区调解委员会">社区调解委员会</option>
+           <option value="街道政务服务岗">街道政务服务岗</option>
+           <option value="社区居委会综合岗">社区居委会综合岗</option>
+           <option value="社区新时代文明实践站">社区新时代文明实践站</option>
+           <option value="街道办城管科">街道办城管科</option>
+           <option value="其他部门">其他部门</option>
+        </select>
+    </div>
+    <div class="action-item">
+        <label class="action-label">处置人</label>
+        <input type="text" class="action-select" id="handlerPerson-${index}" placeholder="请填写处置人姓名" value="${appeal.handlerPerson || ''}">
+    </div>
+    <div class="action-item">
+        <label class="action-label">分派备注</label>
+        <input type="text" class="action-select" id="dispatchRemark-${index}" placeholder="请填写分派备注" value="${appeal.dispatchRemark || ''}">
+    </div>
+</div>
+
+<!-- 办结凭证上传 -->
+<div class="action-group">
+    <div class="action-item" style="min-width: 100%;">
+        <label class="action-label">办结凭证（处置前后对比照，提交待核验必填）</label>
+        <div class="upload-container" id="finishUpload-${index}" style="padding: 16px; border: 2px dashed #e5e7eb; border-radius: 8px; text-align: center; cursor: pointer; margin-bottom: 12px;" onclick="document.getElementById('finishFile-${index}').click()">
+            <div class="upload-text" style="font-size: 13px; color: #6b7280;">点击上传处置后对比图片，最多3张</div>
+            <input type="file" id="finishFile-${index}" accept="image/jpeg,image/png" multiple style="display: none;">
+        </div>
+        <div class="preview-container" id="finishPreview-${index}" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            ${appeal.finishImages && appeal.finishImages.length > 0 ? appeal.finishImages.map((img, imgIndex) => `
+                <div class="appeal-image-item" style="width: 60px; height: 60px; border-radius: 8px; overflow: hidden;">
+                     <img src="${img}" alt="办结凭证${imgIndex+1}" class="previewable-img" style="width:100%;height:100%;object-fit:cover;">
+                </div>
+            `).join('') : ''}
+        </div>
+    </div>
+</div>
+
+<!-- 办结说明 -->
+<div class="action-group">
+    <div class="action-item" style="min-width: 100%;">
+        <label class="action-label">办结说明（提交待核验必填）</label>
+        <textarea class="action-textarea" id="finishDesc-${index}" placeholder="请填写详细的处置说明、完成情况">${appeal.finishDesc || ''}</textarea>
+    </div>
+</div>
+
+<!-- 驳回原因（仅驳回重办时必填） -->
+<div class="action-group" id="rejectReasonGroup-${index}" style="display: none;">
+    <div class="action-item" style="min-width: 100%;">
+        <label class="action-label">驳回原因（驳回重办必填）</label>
+        <textarea class="action-textarea" id="rejectReason-${index}" placeholder="请填写驳回重办的具体原因，将同步给居民">${appeal.rejectReason || ''}</textarea>
+    </div>
+</div>
+
+<!-- 处理结果 + 保存按钮 -->
+<div class="action-group">
+    <div class="action-item" style="min-width: 100%;">
+        <label class="action-label">处理结果（选填）</label>
+        <textarea class="action-textarea" id="resultText-${index}" placeholder="请输入最终办结回复、给居民的通知内容">${appeal.result || ''}</textarea>
+    </div>
+    <button class="submit-btn" onclick="updateAppeal(${index}, '${appeal.id}')">
+        <i class="fa-solid fa-save"></i> 保存修改
+    </button>
+</div>
+</div>
+                `;
+            appealList.appendChild(appealCard);
+
+            // 状态切换 显示/隐藏 驳回原因框
+            const statusSelect = document.getElementById(`statusSelect-${index}`);
+            const rejectGroup = document.getElementById(`rejectReasonGroup-${index}`);
+
+            statusSelect.addEventListener('change', function () {
+                // 选择驳回重办时显示输入框，其他状态隐藏
+                if (this.value === '驳回重办') {
+                    rejectGroup.style.display = 'block';
+                } else {
+                    rejectGroup.style.display = 'none';
+                    // 清空驳回原因
+                    document.getElementById(`rejectReason-${index}`).value = '';
+                }
+            });
+
+        });
+    }
+
+    // 展开/收起诉求描述
+    function toggleDescExpand(descElement) {
+        descElement.classList.toggle('expanded');
+    }
+
+
+    // 修改诉求保存
+    // 修改诉求保存
+    function updateAppeal(cardIndex, appealId) {
+        console.log("当前卡片下标：", cardIndex);
+        console.log("当前诉求ID：", appealId);
+        const allAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+        const appealIndex = allAppeals.findIndex(a => String(a.id) === String(appealId));
+        if (appealIndex === -1) {
+            alert(`错误：未找到ID为${appealId}的诉求，请刷新页面后重试！`);
+            return;
+        }
+        // 获取表单所有值
+        let newStatus = document.getElementById(`statusSelect-${cardIndex}`).value;
+        const newResult = document.getElementById(`resultText-${cardIndex}`).value;
+        const handlerDept = document.getElementById(`handlerDept-${cardIndex}`).value;
+        const handlerPerson = document.getElementById(`handlerPerson-${cardIndex}`).value;
+        const dispatchRemark = document.getElementById(`dispatchRemark-${cardIndex}`).value;
+        const finishDesc = document.getElementById(`finishDesc-${cardIndex}`).value;
+        const rejectReason = document.getElementById(`rejectReason-${cardIndex}`).value;
+        const rejectGroup = document.getElementById(`rejectReasonGroup-${cardIndex}`);
+        // 实时读取最新上传的图片
+        const realtimeAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+        const realtimeIndex = realtimeAppeals.findIndex(a => String(a.id) === String(appealId));
+        const realFinishImages = realtimeAppeals[realtimeIndex]?.finishImages || [];
+        // ========== 核心校验规则（+驳回逻辑） ==========
+        // 1. 绝对禁止管理员手动设置已完成
+        if (newStatus === '已完成') {
+            alert('违规操作！已完成状态只能由居民核验后自动生成，管理员不可手动设置！');
+            return;
+        }
+        // 2. 驳回重办：必须填写驳回原因
+        if (newStatus === '驳回重办') {
+            if (!rejectReason || rejectReason.length < 5) {
+                alert('请填写驳回原因（至少5个字）');
+                return;
+            }
+            // 驳回后强制重置为处理中状态，留痕
+            newStatus = '处理中';
+        } else {
+            // 非驳回状态隐藏驳回原因框
+            rejectGroup.style.display = 'none';
+        }
+        // 3. 提交待核验：必须填办结说明+上传办结凭证
+        if (newStatus === '待核验') {
+            if (!finishDesc || finishDesc.length < 10) {
+                alert('提交待核验前，请填写详细的办结说明（至少10字）');
+                return;
+            }
+            if (realFinishImages.length === 0) {
+                alert('提交待核验前，请上传处置后的办结凭证图片');
+                return;
+            }
+        }
+        // 4. 改为处理中：必须选择处置部门和处置人
+        if (newStatus === '处理中' && (!handlerDept || !handlerPerson)) {
+            alert('请选择处置部门、填写处置人后，再设置为处理中状态');
+            return;
+        }
+        // ========== 更新诉求数据 ==========
+        const updateData = {
+            ...allAppeals[appealIndex],
+            status: newStatus,
+            result: newResult,
+            handlerDepartment: handlerDept,
+            handlerPerson: handlerPerson,
+            dispatchRemark: dispatchRemark,
+            finishDesc: finishDesc,
+            rejectReason: rejectReason, // 驳回原因留痕
+        };
+        // 状态时间记录
+        if (newStatus === '处理中' && !allAppeals[appealIndex].dispatchTime) {
+            updateData.dispatchTime = new Date().toLocaleString();
+        }
+        if (newStatus === '待核验' && !allAppeals[appealIndex].finishTime) {
+            updateData.finishTime = new Date().toLocaleString();
+        }
+        // 驳回时间留痕
+        if (rejectReason) {
+            updateData.rejectTime = new Date().toLocaleString();
+        }
+        allAppeals[appealIndex] = updateData;
+        localStorage.setItem('zhizhitong_appeals', JSON.stringify(allAppeals));
+        // ========== 站内消息通知 ==========
+        const targetUserPhone = allAppeals[appealIndex].phone;
+        let noticeTitle = '';
+        let noticeContent = '';
+        let adminNoticeTitle = '';
+        let adminNoticeContent = '';
+        switch(newStatus) {
+            case '处理中':
+                noticeTitle = rejectReason ? '诉求被驳回重办' : '诉求已受理';
+                noticeContent = rejectReason
+                    ? `您提交的「${allAppeals[appealIndex].type}」诉求（编号：${allAppeals[appealIndex].code}）被驳回重办，驳回原因：${rejectReason}，工作人员将重新处置。`
+                    : `您提交的「${allAppeals[appealIndex].type}」诉求（编号：${allAppeals[appealIndex].code}）已受理，已分派至${handlerDept}${handlerPerson}处置，后续进展将持续同步。`;
+                // 驳回重办/受理时，给管理员发通知
+                adminNoticeTitle = rejectReason ? '诉求被驳回重办' : '诉求已受理分派';
+                adminNoticeContent = rejectReason
+                    ? `「${allAppeals[appealIndex].type}」诉求（编号：${allAppeals[appealIndex].code}）已驳回重办，需重新跟进处理。`
+                    : `「${allAppeals[appealIndex].type}」诉求（编号：${allAppeals[appealIndex].code}）已受理，分派至${handlerDept}${handlerPerson}处置。`;
+                break;
+            case '待核验':
+                noticeTitle = '诉求待核验';
+                noticeContent = `您提交的「${allAppeals[appealIndex].type}」诉求（编号：${allAppeals[appealIndex].code}）已完成处置，请您前往「我的诉求」核验办理结果。`;
+                // 提交待核验时，给管理员发通知
+                adminNoticeTitle = '诉求已提交待核验';
+                adminNoticeContent = `「${allAppeals[appealIndex].type}」诉求（编号：${allAppeals[appealIndex].code}）已提交待居民核验，等待居民确认。`;
+                break;
+            default:
+                noticeTitle = '诉求进度更新';
+                noticeContent = `您提交的「${allAppeals[appealIndex].type}」诉求（编号：${allAppeals[appealIndex].code}），状态已更新为「${newStatus}」。`;
+        }
+        // 给居民发通知（原有逻辑保留）
+        sendNotice(targetUserPhone, noticeTitle, noticeContent);
+        // 给管理员发状态变更通知，触发小红点+Toast弹窗
+        if (adminNoticeTitle && adminNoticeContent) {
+            sendAdminNotice(adminNoticeTitle, adminNoticeContent, appealId);
+        }
+        // 操作成功提示、页面实时刷新
+        alert('诉求信息修改保存成功！');
+        loadAllAppeals();
+    }
+
+
+
+</script>
+
+<!-- 管理员后台AI生成回复兜底逻辑 -->
+<script>
+
+    window.generateAiReply = async function(index, appealId) {
+        // 1. 读取本地诉求数据
+        const allAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+        const appeal = allAppeals.find(item => item.id === appealId);
+        if (!appeal) {
+            alert('未找到对应诉求信息');
+            return;
+        }
+
+        // 2. 获取当前选择的处理状态
+        const statusSelect = document.getElementById(`statusSelect-${index}`);
+        const currentStatus = statusSelect.value;
+
+        // 3. 按钮加载状态（模拟AI生成，真实感拉满）
+        const aiBtn = document.getElementById(`aiReplyBtn-${index}`);
+        aiBtn.disabled = true;
+        aiBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 生成中...';
+
+        // 100%生效的离线兜底逻辑，无API也有结果
+        await new Promise(resolve => setTimeout(resolve, 800)); // 模拟AI生成延迟
+        let replyText = "";
+        switch(currentStatus) {
+            case "待处理":
+                replyText = `您好！您提交的「${appeal.type}」诉求已成功受理，我们已同步至对应责任部门，将在3个工作日内完成初步核实与对接，后续进展会第一时间同步给您，请保持联系方式畅通。`;
+                break;
+            case "处理中":
+                replyText = `您好！您提交的「${appeal.type}」诉求正在推进中，目前已协调相关部门开展现场核实与方案研讨，我们将每2个工作日向您同步一次处理进度，请您耐心等待。`;
+                break;
+            case "待核验":
+                replyText = `您好！您提交的「${appeal.type}」诉求已完成现场处置，处置前后对比照片与办结说明已上传至平台，现提交至您处核验。请您确认办理结果，如有异议可随时驳回并说明原因，我们将第一时间重新处置。`;
+                break;
+            case "已完成":
+                replyText = `您好！您提交的「${appeal.type}」诉求已全部处理完毕。针对您提出的需求，我们已完成方案落地与资源对接，后续如有其他问题，欢迎您随时通过平台反馈，感谢您对社区工作的支持与监督。`;
+                break;
+            default:
+                replyText = "您好！您的诉求已收到，我们将尽快为您跟进处理。";
+        }
+
+        // 4. 填充到文本框，恢复按钮状态
+        document.getElementById(`resultText-${index}`).value = replyText;
+        aiBtn.disabled = false;
+        aiBtn.innerHTML = '<i class="fa-solid fa-robot"></i> 生成回复';
+    };
+
+    // ======================
+    // 导出 Excel 功能
+    // ======================
+    document.addEventListener('DOMContentLoaded', function() {
+        const exportBtn = document.getElementById('exportExcelBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function() {
+                // 读取你的项目真实存储数据
+                const data = JSON.parse(localStorage.getItem('zhizhitong_appeals') || '[]');
+                if (data.length === 0) {
+                    alert('暂无诉求数据可导出');
+                    return;
+                }
+
+                // 表头（完全匹配你的项目字段）
+                const header = [
+                    '诉求编号',
+                    '联系方式',
+                    '诉求类型',
+                    '处置部门',
+                    '诉求内容',
+                    '提交时间',
+                    '处理状态',
+                    '处理结果',
+                    '居民评价'
+                ];
+
+                // 数据映射（100%对应你的字段，无错误）
+                const body = data.map(item => [
+                    item.code || '无',
+                    item.phone || '无',
+                    item.type || '无',
+                    item.handlerDepartment || '未分派',
+                    item.desc || '无',
+                    item.submitTime || '无',
+                    item.status || '无',
+                    item.result || '未处理',
+                    item.score ? `${item.score}星` : '未评价'
+                ]);
+
+                // 生成CSV文件
+                const csv = [
+                    header.join(','),
+                    ...body.map(row => row.map(cell => `"${(cell || '').replace(/"/g, '""')}"`).join(','))
+                ].join('\n');
+
+                const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `智治通社区诉求数据_${new Date().toLocaleDateString()}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+    });
+
+
+    // ==================== 办结凭证图片上传 ====================
+    document.addEventListener('change', function(e) {
+        // 只匹配办结凭证的文件上传框
+        if (e.target.id && e.target.id.startsWith('finishFile-')) {
+            const index = e.target.id.split('finishFile-')[1];
+            const appealId = document.getElementById(`statusSelect-${index}`).getAttribute('data-appeal-id');
+            const previewContainer = document.getElementById(`finishPreview-${index}`);
+            const files = e.target.files;
+
+            if (!files || files.length === 0) return;
+
+            // 获取当前诉求数据
+            const allAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+            const appealIndex = allAppeals.findIndex(a => String(a.id) === String(appealId));
+            if (appealIndex === -1) {
+                alert('诉求不存在，请刷新页面重试');
+                return;
+            }
+
+            // 初始化图片数组
+            if (!allAppeals[appealIndex].finishImages) {
+                allAppeals[appealIndex].finishImages = [];
+            }
+            let currentImages = allAppeals[appealIndex].finishImages;
+
+            // 限制最多3张
+            if (currentImages.length + files.length > 3) {
+                alert('最多只能上传3张办结凭证图片');
+                e.target.value = '';
+                return;
+            }
+
+            // 遍历上传图片
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                // 格式校验
+                if (!file.type.match('image/jpeg|image/png')) {
+                    alert(`第${i+1}张图片格式错误，仅支持JPG/PNG`);
+                    continue;
+                }
+                // 大小校验
+                if (file.size > 5 * 1024 * 1024) {
+                    alert(`第${i+1}张图片超过5MB，请压缩后上传`);
+                    continue;
+                }
+
+                // 读取图片并实时预览+保存
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64 = event.target.result;
+                    currentImages.push(base64);
+
+                    // 保存到本地存储
+                    allAppeals[appealIndex].finishImages = currentImages;
+                    localStorage.setItem('zhizhitong_appeals', JSON.stringify(allAppeals));
+
+                    // 实时渲染预览（选完立刻显示图片）
+                    previewContainer.innerHTML = currentImages.map((img, idx) => `
+                        <div class="appeal-image-item" style="width: 60px; height: 60px; border-radius: 8px; overflow: hidden;">
+                              <img src="${img}" alt="办结凭证${imgIndex+1}" class="previewable-img" style="width:100%;height:100%;object-fit:cover;">
+                        </div>
+                        `).join('');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // 清空文件框，允许重复上传
+            setTimeout(() => {
+                e.target.value = '';
+            }, 500);
+        }
+    });
+
+    // 管理员AI智能分派
+    function aiAutoDispatch(index, appealType) {
+        const deptSelect = document.getElementById(`handlerDept-${index}`);
+        if(!deptSelect) return;
+
+        let dept = '其他部门';
+        switch(appealType) {
+            case '设施报修':
+                dept = '社区物业维修组';
+                break;
+            case '纠纷调解':
+                dept = '社区调解委员会';
+                break;
+            case '政策咨询':
+                dept = '街道政务服务岗';
+                break;
+            case '社区建议':
+                dept = '社区居委会综合岗';
+                break;
+            case '志愿服务':
+                dept = '社区新时代文明实践站';
+                break;
+            default:
+                dept = '其他部门';
+                break;
+        }
+
+        deptSelect.value = dept;
+        alert('AI智能分派完成：已根据诉求类型自动匹配处置部门');
+    }
+
+
+    // 管理员代居民提交诉求
+    function adminSubmitAppeal() {
+        const phone = prompt('请输入居民 11 位手机号：');
+        if (!phone || phone.length !== 11) {
+            alert('请输入正确手机号');
+            return;
+        }
+        const desc = prompt('请输入诉求内容（≥10字）：');
+        if (!desc || desc.length < 10) {
+            alert('诉求内容至少 10 个字');
+            return;
+        }
+
+        const allAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+        const now = new Date();
+        const dateStr = now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0');
+        const todayAppeals = allAppeals.filter(item => item.code && item.code.startsWith(`SQ${dateStr}`));
+        const seq = todayAppeals.length + 1;
+        const appealCode = `SQ${dateStr}${String(seq).padStart(3,'0')}`;
+
+        const newAppeal = {
+            id: Date.now(),
+            code: appealCode,
+            type: '其他',
+            desc: desc,
+            phone: phone,
+            submitTime: new Date().toLocaleString(),
+            status: '待处理',
+            images: [],
+            finishImages: [],
+            handlerDepartment: '',
+            handlerPerson: '',
+            dispatchRemark: '',
+            finishDesc: '',
+            result: '',
+            score: '',
+            scoreRemark: '',
+            verifyTime: '',
+            verifyResult: ''
+        };
+
+        allAppeals.push(newAppeal);
+        localStorage.setItem('zhizhitong_appeals', JSON.stringify(allAppeals));
+        alert('代居民提交成功！');
+        loadAllAppeals();
+    }
+
+
+    // ==================== 管理员消息通知核心逻辑 ====================
+    // 1. 页面加载时初始化消息
+    document.addEventListener('DOMContentLoaded', function() {
+        initAdminNotice();
+        refreshNoticeBadge();
+    });
+
+    // 2. 消息面板开关
+    document.getElementById('adminNoticeBtn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        const panel = document.getElementById('noticePanel');
+        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        renderNoticeList();
+    });
+
+    // 点击页面其他区域关闭面板
+    document.addEventListener('click', function(e) {
+        const panel = document.getElementById('noticePanel');
+        const btn = document.getElementById('adminNoticeBtn');
+        if (!panel.contains(e.target) && !btn.contains(e.target)) {
+            panel.style.display = 'none';
+        }
+    });
+
+    // 3. 全部已读
+    document.getElementById('readAllBtn').addEventListener('click', function() {
+        const notices = getAdminNotices();
+        notices.forEach(item => item.isRead = true);
+        localStorage.setItem('zhizhitong_admin_notices', JSON.stringify(notices));
+        renderNoticeList();
+        refreshNoticeBadge();
+    });
+
+    // 4. 工具函数：获取所有管理员消息
+    function getAdminNotices() {
+        return JSON.parse(localStorage.getItem('zhizhitong_admin_notices')) || [];
+    }
+
+    // 5. 工具函数：刷新未读小红点
+    function refreshNoticeBadge() {
+        const notices = getAdminNotices();
+        const unreadCount = notices.filter(item => !item.isRead).length;
+        const badge = document.getElementById('noticeBadge');
+
+        if (unreadCount > 0) {
+            badge.style.display = 'flex';
+            badge.innerText = unreadCount;
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    // 6. 渲染消息列表
+    function renderNoticeList() {
+        const notices = getAdminNotices().sort((a,b) => new Date(b.createTime) - new Date(a.createTime));
+        const listContainer = document.getElementById('noticeList');
+        const emptyState = document.getElementById('noticeEmpty');
+
+        // 空状态处理
+        if (notices.length === 0) {
+            emptyState.style.display = 'block';
+            listContainer.innerHTML = '';
+            listContainer.appendChild(emptyState);
+            return;
+        }
+
+        // 渲染消息列表
+        emptyState.style.display = 'none';
+        listContainer.innerHTML = notices.map((notice, index) => `
+        <div style="padding: 12px 16px; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: all 0.2s; background: ${notice.isRead ? 'white' : '#eff6ff'};"
+             onclick="jumpToNoticeAppeal('${notice.appealId}', ${index})"
+             onmouseover="this.style.background='#f9fafb'"
+             onmouseout="this.style.background='${notice.isRead ? 'white' : '#eff6ff'}'">
+            <div style="font-size: 14px; font-weight: ${notice.isRead ? '400' : '600'}; color: #1f2937; margin-bottom: 4px;">
+                ${notice.title}
+            </div>
+            <div style="font-size: 13px; color: #6b7280; margin-bottom: 6px;">
+                ${notice.content}
+            </div>
+            <div style="font-size: 12px; color: #9ca3af; display: flex; justify-content: space-between;">
+                <span>${notice.createTime}</span>
+                ${!notice.isRead ? '<span style="color: #1a56db;">未读</span>' : '<span>已读</span>'}
+            </div>
+        </div>
+    `).join('');
+    }
+
+
+    // 7. 点击消息跳转到对应诉求/反馈
+    function jumpToNoticeAppeal(appealId, noticeIndex) {
+        // 标记为已读
+        const notices = getAdminNotices();
+        notices[noticeIndex].isRead = true;
+        localStorage.setItem('zhizhitong_admin_notices', JSON.stringify(notices));
+        // 关闭面板
+        document.getElementById('noticePanel').style.display = 'none';
+        refreshNoticeBadge();
+
+        // ==================== 【新增】判断是诉求还是反馈 ====================
+        const allAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+        const allFeedbacks = JSON.parse(localStorage.getItem('zhizhitong_feedbacks')) || [];
+
+        const isAppeal = allAppeals.some(item => String(item.id) === String(appealId));
+        const isFeedback = allFeedbacks.some(item => String(item.id) === String(appealId));
+
+        // -------------------- 情况1：跳转到诉求 --------------------
+        if (isAppeal) {
+            const appealIndex = allAppeals.findIndex(item => String(item.id) === String(appealId));
+            if (appealIndex !== -1) {
+                const appealList = document.getElementById('appealList');
+                const targetCard = appealList.children[appealIndex];
+                if (targetCard) {
+                    // 滚动到卡片
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // 高亮动画
+                    targetCard.classList.add('highlight-animation');
+                    // 2秒后移除动画
+                    setTimeout(() => {
+                        targetCard.classList.remove('highlight-animation');
+                    }, 2000);
+                }
+            }
+        }
+
+        // -------------------- 情况2：跳转到反馈（自动展开面板） --------------------
+        if (isFeedback) {
+            // 自动展开反馈面板
+            if (!isFeedbackPanelOpen) {
+                toggleFeedbackPanel();
+            }
+            // 等待面板展开后再滚动+高亮
+            setTimeout(() => {
+                const feedbackList = document.getElementById('feedbackList');
+                const feedbackItems = feedbackList.querySelectorAll('.appeal-card');
+
+                feedbackItems.forEach((card) => {
+                    // 从卡片里匹配ID
+                    const idAttr = card.querySelector('[id^="fbStatus-"]')?.id;
+                    if (!idAttr) return;
+                    const cardIndex = idAttr.replace('fbStatus-', '');
+                    const feedback = allFeedbacks[cardIndex];
+                    if (feedback && String(feedback.id) === String(appealId)) {
+                        // 滚动+高亮
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.classList.add('highlight-animation');
+                        setTimeout(() => {
+                            card.classList.remove('highlight-animation');
+                        }, 2000);
+                    }
+                });
+            }, 300);
+        }
+
+        // 刷新反馈列表（如果是反馈通知，展开面板）
+        renderFeedbackList();
+
+    }
+
+
+
+
+
+    // 8. 全局工具函数：给管理员发送通知（用户端页面可直接调用）
+    function sendAdminNotice(title, content, appealId) {
+        const notices = getAdminNotices();
+        const newNotice = {
+            id: Date.now(),
+            title: title,
+            content: content,
+            appealId: appealId,
+            isRead: false,
+            createTime: new Date().toLocaleString()
+        };
+        notices.unshift(newNotice);
+        // 最多保留50条消息，避免溢出
+        if (notices.length > 50) notices.splice(50);
+        localStorage.setItem('zhizhitong_admin_notices', JSON.stringify(notices));
+
+        // 管理员页面实时刷新小红点（如果当前在管理员页面）
+        if (window.location.pathname.includes('admin.html')) {
+            refreshNoticeBadge();
+            // 【新增】新消息Toast弹窗触发
+            showNewMsgToast(title, content);
+        }
+    }
+
+    // Toast弹窗显示逻辑
+    function showNewMsgToast(title, content) {
+        const toast = document.getElementById('newMsgToast');
+        const toastTitle = document.getElementById('toastTitle');
+        const toastContent = document.getElementById('toastContent');
+
+        // 填充消息内容
+        toastTitle.innerText = title;
+        toastContent.innerText = content.length > 25 ? content.slice(0,25) + '...' : content;
+
+        // 显示弹窗，带动画
+        toast.style.display = 'flex';
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+
+        // 点击Toast直接打开消息面板
+        toast.onclick = function() {
+            document.getElementById('noticePanel').style.display = 'block';
+            renderNoticeList();
+            hideToast();
+        };
+
+        // 3秒后自动隐藏
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(hideToast, 3000);
+    }
+
+    // Toast隐藏动画
+    function hideToast() {
+        const toast = document.getElementById('newMsgToast');
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 300);
+    }
+
+    // 9. 页面初始化
+    function initAdminNotice() {
+        // 初始化本地存储
+        if (!localStorage.getItem('zhizhitong_admin_notices')) {
+            localStorage.setItem('zhizhitong_admin_notices', '[]');
+        }
+    }
+
+</script>
+
+<!-- 图片预览弹窗（放大图片的容器，必须加） -->
+<div class="image-modal" id="imageModal">
+    <button class="modal-close-btn" id="modalCloseBtn">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+    <button class="modal-prev-btn" id="modalPrevBtn">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="modal-next-btn" id="modalNextBtn">
+        <i class="fa-solid fa-chevron-right"></i>
+    </button>
+    <div class="modal-content">
+        <img src="" alt="诉求图片预览" class="modal-img" id="modalImg">
+    </div>
+</div>
+
+<script>
+    // ==================== 图片预览 ====================
+    window.appealPreview = {
+        // 基础状态
+        allImages: [],
+        currentIndex: 0,
+        // DOM元素
+        modal: null,
+        modalImg: null,
+        modalContent: null,
+        closeBtn: null,
+        prevBtn: null,
+        nextBtn: null,
+        // 缩放拖拽状态
+        scale: 1,
+        translateX: 0,
+        translateY: 0,
+        isDragging: false,
+        startX: 0,
+        startY: 0,
+        // 锁：避免重复触发错误
+        isClosed: true
+    };
+
+    // 页面加载完成初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        const preview = window.appealPreview;
+        // 缓存DOM元素
+        preview.modal = document.getElementById('imageModal');
+        preview.modalImg = document.getElementById('modalImg');
+        preview.modalContent = document.querySelector('.modal-content');
+        preview.closeBtn = document.getElementById('modalCloseBtn');
+        preview.prevBtn = document.getElementById('modalPrevBtn');
+        preview.nextBtn = document.getElementById('modalNextBtn');
+
+        // ============== 点击图片打开预览 ==============
+        document.body.addEventListener('click', function(e) {
+            const targetImg = e.target.closest('.previewable-img');
+            if (!targetImg || !preview.isClosed) return;
+
+            e.stopPropagation();
+            e.preventDefault();
+
+            // 1. 重置缩放拖拽状态
+            resetTransform();
+            // 2. 解锁状态
+            preview.isClosed = false;
+            // 3. 清空之前的onerror，避免历史错误触发
+            preview.modalImg.onerror = null;
+            preview.modalImg.src = '';
+
+            // 4. 拿到图片地址
+            const currentImgSrc = targetImg.getAttribute('src');
+            if (!currentImgSrc || currentImgSrc === '') {
+                alert('图片地址无效，无法预览');
+                preview.isClosed = true;
+                return;
+            }
+
+            // 5. 识别同组图片
+            const parentContainer = targetImg.closest('.appeal-images, .preview-container');
+            const allImgElements = parentContainer ? parentContainer.querySelectorAll('.previewable-img') : [targetImg];
+            preview.allImages = Array.from(allImgElements).map(img => img.getAttribute('src')).filter(src => src && src.length > 10);
+
+            // 6. 定位当前图片索引
+            preview.currentIndex = preview.allImages.indexOf(currentImgSrc);
+            preview.currentIndex = preview.currentIndex === -1 ? 0 : preview.currentIndex;
+
+            // 7. 渲染图片
+            renderPreviewImage();
+
+            // 8. 显示弹窗，禁止页面滚动
+            preview.modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // ============== 关闭按钮事件 ==============
+        preview.closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closePreviewModal();
+        });
+
+        // ============== 点击黑色背景关闭 ==============
+        preview.modal.addEventListener('click', function(e) {
+            if (e.target === preview.modal) {
+                closePreviewModal();
+            }
+        });
+
+        // ============== 上一张/下一张 ==============
+        preview.prevBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            switchPreviewImage('prev');
+        });
+        preview.nextBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            switchPreviewImage('next');
+        });
+
+        // ============== 键盘快捷键 ==============
+        document.addEventListener('keydown', function(e) {
+            if (preview.isClosed) return;
+            if (e.key === 'Escape') closePreviewModal();
+            if (e.key === 'ArrowLeft') switchPreviewImage('prev');
+            if (e.key === 'ArrowRight') switchPreviewImage('next');
+        });
+
+        // ============== 滚轮放大缩小 ==============
+        preview.modal.addEventListener('wheel', function(e) {
+            if (preview.isClosed) return;
+            e.preventDefault();
+            e.stopPropagation();
+
+            // 缩放比例：滚轮向上放大，向下缩小
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            let newScale = preview.scale + delta;
+            // 限制缩放范围：最小0.5倍，最大5倍
+            newScale = Math.max(0.5, Math.min(newScale, 5));
+            preview.scale = newScale;
+
+            // 应用缩放
+            updateTransform();
+        });
+
+        // ============== 双击重置缩放和位置 ==============
+        preview.modal.addEventListener('dblclick', function(e) {
+            if (preview.isClosed) return;
+            e.preventDefault();
+            e.stopPropagation();
+            resetTransform();
+        });
+
+        // ============== 拖拽移动图片 ==============
+        preview.modalContent.addEventListener('mousedown', function(e) {
+            if (preview.isClosed || preview.scale <= 1) return; // 没放大时不能拖拽
+            e.preventDefault();
+            e.stopPropagation();
+
+            preview.isDragging = true;
+            preview.startX = e.clientX - preview.translateX;
+            preview.startY = e.clientY - preview.translateY;
+        });
+        document.addEventListener('mousemove', function(e) {
+            if (!preview.isDragging || preview.isClosed) return;
+            e.preventDefault();
+            e.stopPropagation();
+
+            preview.translateX = e.clientX - preview.startX;
+            preview.translateY = e.clientY - preview.startY;
+            updateTransform();
+        });
+        document.addEventListener('mouseup', function() {
+            preview.isDragging = false;
+        });
+        // 拖拽离开窗口时停止
+        document.addEventListener('mouseleave', function() {
+            preview.isDragging = false;
+        });
+    });
+
+    // ============== 渲染预览图片==============
+    function renderPreviewImage() {
+        const preview = window.appealPreview;
+        // 先清空之前的错误事件
+        preview.modalImg.onerror = null;
+        // 重置缩放
+        resetTransform();
+
+        // 给图片赋值
+        preview.modalImg.src = preview.allImages[preview.currentIndex];
+
+        // 图片加载失败处理（只触发一次，不会死循环）
+        preview.modalImg.onerror = function() {
+            if (preview.isClosed) return;
+            console.error('图片加载失败，地址：', this.src);
+            alert('图片加载失败，请检查图片资源');
+            // 加载失败直接关闭弹窗，避免死循环
+            closePreviewModal();
+        };
+
+        // 单图隐藏切换按钮
+        if (preview.allImages.length <= 1) {
+            preview.prevBtn.classList.add('hidden');
+            preview.nextBtn.classList.add('hidden');
+        } else {
+            preview.prevBtn.classList.remove('hidden');
+            preview.nextBtn.classList.remove('hidden');
+        }
+    }
+
+    // ============== 切换图片 ==============
+    function switchPreviewImage(direction) {
+        const preview = window.appealPreview;
+        if (preview.allImages.length <= 1 || preview.isClosed) return;
+
+        // 循环切换
+        if (direction === 'prev') {
+            preview.currentIndex = (preview.currentIndex - 1 + preview.allImages.length) % preview.allImages.length;
+        } else {
+            preview.currentIndex = (preview.currentIndex + 1) % preview.allImages.length;
+        }
+
+        // 重新渲染图片
+        renderPreviewImage();
+    }
+
+    // ============== 关闭弹窗（彻底解决卡死+无限弹窗） ==============
+    function closePreviewModal() {
+        const preview = window.appealPreview;
+        // 加锁，避免重复关闭
+        if (preview.isClosed) return;
+        preview.isClosed = true;
+
+        // 1. 先清空错误事件，再清空src，彻底避免触发错误
+        preview.modalImg.onerror = null;
+        preview.modalImg.src = '';
+
+        // 2. 隐藏弹窗
+        preview.modal.classList.remove('show');
+
+        // 3. 彻底恢复页面滚动，100%兼容，不会卡死
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.bottom = '';
+
+        // 4. 重置所有状态
+        preview.allImages = [];
+        preview.currentIndex = 0;
+        resetTransform();
+    }
+
+    // ============== 重置缩放和位移 ==============
+    function resetTransform() {
+        const preview = window.appealPreview;
+        preview.scale = 1;
+        preview.translateX = 0;
+        preview.translateY = 0;
+        preview.isDragging = false;
+        updateTransform();
+    }
+
+    // ============== 应用缩放和位移 ==============
+    function updateTransform() {
+        const preview = window.appealPreview;
+        preview.modalContent.style.transform = `translate(${preview.translateX}px, ${preview.translateY}px) scale(${preview.scale})`;
+    }
+
+
+    // ==================== 意见反馈管理（管理员端） ====================
+    let isFeedbackPanelOpen = false;
+
+    // 折叠面板切换
+    function toggleFeedbackPanel() {
+        const panel = document.getElementById('feedbackPanel');
+        const arrow = document.getElementById('feedbackArrow');
+        isFeedbackPanelOpen = !isFeedbackPanelOpen;
+
+        if (isFeedbackPanelOpen) {
+            panel.style.display = 'block';
+            arrow.style.transform = 'rotate(180deg)';
+            renderFeedbackList();
+        } else {
+            panel.style.display = 'none';
+            arrow.style.transform = 'rotate(0)';
+        }
+    }
+
+    // 初始化反馈存储
+    function initFeedbackStorage() {
+        if (!localStorage.getItem('zhizhitong_feedbacks')) {
+            localStorage.setItem('zhizhitong_feedbacks', JSON.stringify([]));
+        }
+    }
+
+    // 获取所有反馈
+    function getFeedbacks() {
+        initFeedbackStorage();
+        return JSON.parse(localStorage.getItem('zhizhitong_feedbacks')) || [];
+    }
+
+    // 渲染反馈列表
+    function renderFeedbackList() {
+        const list = document.getElementById('feedbackList');
+        const empty = document.getElementById('feedbackEmpty');
+        const filterStatus = document.getElementById('feedbackStatusFilter').value;
+
+        let listData = getFeedbacks();
+        if (filterStatus) {
+            listData = listData.filter(item => item.status === filterStatus);
+        }
+        listData.sort((a,b) => new Date(b.submitTime) - new Date(a.submitTime));
+
+        // 刷新待处理小红点
+        refreshFeedbackBadge();
+
+        if (listData.length === 0) {
+            empty.style.display = 'block';
+            list.innerHTML = '';
+            return;
+        }
+
+        empty.style.display = 'none';
+        list.innerHTML = listData.map((item, index) => `
+    <div class="appeal-card" style="padding:20px;">
+        <div class="appeal-header" style="margin-bottom:12px;">
+            <div class="appeal-basic">
+                <div class="appeal-type">
+                    <i class="fa-solid fa-tag"></i> ${item.type}
+                </div>
+                <div class="appeal-meta">
+                    <div class="meta-item"><i class="fa-solid fa-id-card"></i> 反馈编号：${item.code}</div>
+                    <div class="meta-item"><i class="fa-solid fa-user"></i> ${item.phone.slice(0,3)}****${item.phone.slice(7)}</div>
+                    <div class="meta-item"><i class="fa-solid fa-clock"></i> ${item.submitTime}</div>
+                </div>
+            </div>
+            <div class="appeal-status ${item.status === '待处理' ? 'status-pending' : item.status === '处理中' ? 'status-processing' : 'status-completed'}">
+                ${item.status}
+            </div>
+        </div>
+
+        <div class="appeal-content" style="margin-bottom:16px;">
+            <div style="font-size:14px; color:#4b5563; line-height:1.6;">${item.desc}</div>
+        </div>
+
+        ${item.status === '已完成' ? `
+        <div class="appeal-result show">
+            <div class="result-title"><i class="fa-solid fa-check-circle"></i> 处理结果</div>
+            <div class="result-content">${item.handleResult}</div>
+            <div style="font-size:12px; color:#6b7280; margin-top:6px;">
+                处理时间：${item.handleTime || ''}
+            </div>
+        </div>
+        ` : ''}
+
+        <div class="admin-actions" style="${item.status === '已完成' ? 'display:none;' : ''}">
+            <div class="action-group">
+                <div class="action-item">
+                    <label class="action-label">处理状态</label>
+                    <select class="action-select" id="fbStatus-${index}">
+                        <option value="待处理" ${item.status === '待处理' ? 'selected' : ''}>待处理</option>
+                        <option value="处理中" ${item.status === '处理中' ? 'selected' : ''}>处理中</option>
+                        <option value="已完成" ${item.status === '已完成' ? 'selected' : ''}>已完成</option>
+                    </select>
+                </div>
+                <div class="action-item" style="min-width:100%;">
+                    <label class="action-label">处理结果</label>
+                    <textarea class="action-textarea" id="fbResult-${index}" placeholder="请填写处理结果">${item.handleResult || ''}</textarea>
+                </div>
+            </div>
+            <button class="submit-btn" onclick="saveFeedbackResult(${index}, '${item.id}')">
+                <i class="fa-solid fa-save"></i> 保存处理
+            </button>
+        </div>
+    </div>
+    `).join('');
+    }
+
+    // 保存反馈处理结果
+    function saveFeedbackResult(index, feedbackId) {
+        const all = getFeedbacks();
+        const targetIndex = all.findIndex(f => String(f.id) === String(feedbackId));
+        if (targetIndex === -1) {
+            alert('未找到该反馈');
+            return;
+        }
+
+        const newStatus = document.getElementById(`fbStatus-${index}`).value;
+        const handleResult = document.getElementById(`fbResult-${index}`).value.trim();
+
+        if (newStatus === '已完成' && !handleResult) {
+            alert('已完成状态必须填写处理结果');
+            return;
+        }
+
+        all[targetIndex].status = newStatus;
+        all[targetIndex].handleResult = handleResult;
+        all[targetIndex].handleTime = new Date().toLocaleString();
+
+        localStorage.setItem('zhizhitong_feedbacks', JSON.stringify(all));
+
+        // 给居民发通知
+        sendNotice(all[targetIndex].phone, '意见反馈已回复', `您提交的「${all[targetIndex].type}」反馈已有回复，处理结果：${handleResult || '处理中'}`);
+
+        alert('处理结果保存成功');
+        renderFeedbackList();
+    }
+
+    // 重置筛选
+    function resetFeedbackFilter() {
+        document.getElementById('feedbackStatusFilter').value = '';
+        renderFeedbackList();
+    }
+
+    // 刷新待处理小红点
+    function refreshFeedbackBadge() {
+        const badge = document.getElementById('feedbackBadge');
+        const pendingCount = getFeedbacks().filter(f => f.status === '待处理').length;
+        if (pendingCount > 0) {
+            badge.innerText = `${pendingCount}条待处理`;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    // 页面加载时刷新小红点
+    document.addEventListener('DOMContentLoaded', function() {
+        initFeedbackStorage();
+        refreshFeedbackBadge();
+    });
+
+
+</script>
+
+</body>
+</html>

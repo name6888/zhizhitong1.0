@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目介绍 - 智治通社区共治平台</title>
+    <!-- 引入公共样式 -->
+    <link rel="stylesheet" href="common.css">
+    <!-- 引入Font Awesome矢量图标 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ==================== Hero 区域 独有样式 ==================== */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1a56db 100%);
+            color: white;
+            padding: 120px 24px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://picsum.photos/id/1067/1920/1080') center/cover;
+            opacity: 0.1;
+        }
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .hero-subtitle {
+            font-size: 18px;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.9);
+        }
+        /* ==================== 内容卡片 独有样式 ==================== */
+        .content-block {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            margin-bottom: 0;
+            border: none;
+            box-shadow: none;
+        }
+        .content-block:hover {
+            box-shadow: none;
+            transform: none;
+        }
+        .content-block h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 24px;
+            position: relative;
+            padding-bottom: 12px;
+            padding-left: 0;
+        }
+        .content-block h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2.5px;
+            background: #9bc6f9;
+            border-radius: 2px;
+        }
+        .content-block p {
+            font-size: 17px;
+            color: #4b5563;
+            line-height: 1.9;
+            margin-bottom: 18px;
+        }
+        .content-block ul {
+            margin-left: 24px;
+            color: #4b5563;
+            line-height: 1.9;
+        }
+        .content-block li {
+            margin-bottom: 12px;
+            font-size: 17px;
+        }
+        /* ==================== 政策背景表格 独有样式 ==================== */
+        .policy-table-container {
+            overflow-x: auto;
+            margin-top: 24px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        .policy-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: none;
+        }
+        .policy-table th {
+            background: #1a56db;
+            color: white;
+            padding: 18px 24px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .policy-table td {
+            padding: 18px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+            color: #374151;
+            vertical-align: top;
+            line-height: 1.6;
+        }
+        .policy-table tr:hover {
+            background: #dbeafe;
+        }
+        .policy-table td:first-child {
+            font-weight: 600;
+            color: #1f2937;
+            white-space: nowrap;
+        }
+        .policy-table tr:last-child td {
+            border-bottom: none;
+        }
+        /* ==================== 响应式独有适配 ==================== */
+        @media (max-width: 640px) {
+            .content-block {
+                padding: 24px;
+            }
+            .content-block h3 {
+                font-size: 20px;
+            }
+            .content-block p, .content-block li {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">
+            <div class="brand-logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="#1a56db" stroke-width="2"/>
+                    <path d="M20 8L28 24H12L20 8Z" fill="#1a56db"/>
+                    <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">智治通</span>
+                <span class="brand-slogan">川北川南一站式社区共治服务平台</span>
+            </div>
+        </div>
+        <!-- 汉堡按钮 -->
+        <div class="nav-toggle" id="navToggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </div>
+        <!-- 桌面菜单 -->
+        <ul class="nav-menu">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="project.html" class="active">项目介绍</a></li>
+            <li><a href="appeal-submit.html">诉求提交</a></li>
+            <li><a href="appeal-query.html">我的诉求</a></li>
+            <!-- 个人中心入口：普通用户登录后显示 -->
+            <li id="profileNavItem" style="display: none;"><a href="profile.html">个人中心</a></li>
+            <!-- 管理员后台入口：管理员登录后显示 -->
+            <li id="adminNavItem" style="display: none;"><a href="admin.html">管理员后台</a></li>
+            <!-- 消息通知入口：普通用户登录后显示 -->
+            <li id="noticeNavItem" class="nav-notice" style="display: none;">
+                <a href="javascript:;">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notice-badge" id="noticeBadge" style="display: none;">0</span>
+                </a>
+            </li>
+            <!-- 登录/注册入口：未登录显示 -->
+            <li id="loginNavItem"><a href="login.html" id="loginLink">登录/注册</a></li>
+            <!-- 退出登录入口：登录后显示 -->
+            <li id="logoutNavItem" style="display: none;"><a href="javascript:;" id="logoutBtn" style="color: #ef4444;">退出</a></li>
+        </ul>
+    </div>
+</nav>
+<!-- 页面主体 -->
+<main>
+    <!-- Hero 区域 -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1 class="hero-title">项目介绍</h1>
+            <p class="hero-subtitle">聚焦川北川南社区治理痛点，打造一站式数字化共治解决方案</p>
+        </div>
+    </section>
+    <!-- 项目定位 -->
+    <section class="bg-white">
+        <div class="section-container">
+            <div class="content-block">
+                <h3>项目定位</h3>
+                <p>智治通是一款聚焦川北川南（南充、自贡、巴中等二线及以下城市）的一站式社区共治服务平台。我们核心解决当前社区治理中「诉求匹配难、协同效率低、服务分散」的痛点，致力于打造居民、政府、物业、社会组织、高校五维联动的数字化治理闭环。</p>
+                <p>对标天府市民云、天府通办等产品，我们的差异化优势在于：<strong>整合多类政务/便民小程序，避免微信多工具切换麻烦；深耕川北川南本地化服务，覆盖下沉市场，填补区域空白</strong>。</p>
+            </div>
+        </div>
+    </section>
+    <!-- 政策背景 -->
+    <section class="bg-light">
+        <div class="section-container">
+            <div class="content-block">
+                <h3>政策背景</h3>
+                <p>国家及地方层面持续出台政策，为基层治理现代化提供制度保障：</p>
+                <!-- 表格容器适配移动端 -->
+                <div class="policy-table-container">
+                    <table class="policy-table">
+                        <thead>
+                        <tr>
+                            <th>时间</th>
+                            <th>政策文件</th>
+                            <th>相关内容</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>2021/04/28</td>
+                            <td>《关于加强基层治理体系和治理能力现代化建设的意见》</td>
+                            <td>建立党组织统一领导、政府依法履责、各类组织积极协同、群众广泛参与的基层治理体系</td>
+                        </tr>
+                        <tr>
+                            <td>2021/12/27</td>
+                            <td>《"十四五"城乡社区服务体系建设规划》</td>
+                            <td>推动建立健全党建引领下的社区居民委员会、业主委员会、物业服务企业协调运行机制</td>
+                        </tr>
+                        <tr>
+                            <td>2022/10/16</td>
+                            <td>《中国共产党第二十次全国代表大会报告》</td>
+                            <td>加强人民当家作主制度保障，全面发展协商民主，积极发展基层民主</td>
+                        </tr>
+                        <tr>
+                            <td>2025/01/05</td>
+                            <td>《关于2025年加力扩围实施大规模设备更新以旧换新政策的通知》</td>
+                            <td>将支持范围扩展至电子信息、安全生产、老旧电梯等设备更新领域</td>
+                        </tr>
+                        <tr>
+                            <td>2025/04/30</td>
+                            <td>《支持创业带动就业的若干政策措施》</td>
+                            <td>对高校毕业生提出创业担保贷款、创业补贴、税收减免等明确支持</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 核心功能详解 -->
+    <section class="bg-white">
+        <div class="section-container">
+            <div class="content-block">
+                <h3>核心功能详解</h3>
+                <ul>
+                    <li><strong>诉求一键匹配：</strong>居民通过平台提交诉求（如电梯安装纠纷、物业矛盾），系统快速对接政府对应部门、物业、法律工作者，形成全流程闭环管理。</li>
+                    <li><strong>数据价值变现：</strong>对社区事件的解决方案、原因进行脱敏分析，为高校、研究所提供研究数据，实现数据价值增值。</li>
+                    <li><strong>社会组织入驻：</strong>引入社会组织、志愿团队、培训师资源，发布志愿活动信息，匹配社区需求，创造就业岗位，平台抽取服务佣金。</li>
+                    <li><strong>AI语音助手（规划中）：</strong>通过语音对话直接跳转对应服务页面，解决老年人操作难题，同类产品无此创新功能。</li>
+                    <li><strong>一站式便民服务：</strong>整合政务办事、社区通知、邻里互助等功能，替代多个微信小程序，提升使用效率。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!-- 商业模式 -->
+    <section class="bg-light">
+        <div class="section-container">
+            <div class="content-block">
+                <h3>商业模式</h3>
+                <ul>
+                    <li><strong>政府购买服务：</strong>为社区/街道提供平台运维、定制化数据服务，收取服务费。</li>
+                    <li><strong>服务佣金：</strong>社会组织、商户入驻平台，抽取服务交易佣金。</li>
+                    <li><strong>数据服务：</strong>脱敏后的社区治理数据，出售给高校、研究所等研究机构。</li>
+                    <li><strong>本地化推广：</strong>以南充为试点，逐步复制到川北川南其他城市，最终辐射西部区域。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!-- 核心创新与竞争力 -->
+    <section class="bg-white">
+        <div class="section-container">
+            <div class="content-block">
+                <h3>核心创新与竞争力</h3>
+                <ul>
+                    <li><strong>模式创新：</strong>五维联动共治模式，打通居民、政府、社会力量的协同壁垒。</li>
+                    <li><strong>技术创新：</strong>规划AI语音交互功能，实现无操作跳转，适老化设计，填补同类产品空白。</li>
+                    <li><strong>市场创新：</strong>聚焦川北川南下沉市场，整合多小程序，解决用户使用痛点。</li>
+                    <li><strong>团队优势：</strong>跨专业团队（计算机、法学、财务管理），覆盖技术、法务、财务全链条，具备统筹对接、合规审核、宣文撰写等能力。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!-- 发展规划 -->
+    <section class="bg-light">
+        <div class="section-container">
+            <div class="content-block">
+                <h3>发展规划</h3>
+                <p>项目将严格按照"试点→复制→规模化"三阶段稳步推进：</p>
+                <ul>
+                    <li><strong>试点阶段：</strong>完成南充市3类试点社区专项调研，搭建平台基础功能模块，完成首轮政企/高校/社会组织合作对接，启动试运营。</li>
+                    <li><strong>复制阶段：</strong>形成标准化运营手册，将成功模式复制到川北川南其他城市，覆盖更多社区。</li>
+                    <li><strong>规模化阶段：</strong>打造"社区治理操作系统"，输出解决方案，成为基层治理数字化领先品牌，实现跨省输出。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+<!-- 返回顶部按钮 -->
+<div id="backToTop">↑</div>
+<!-- 页脚 -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="brand-logo">
+                <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="white" stroke-width="2"/>
+                    <path d="M20 8L28 24H12L20 8Z" fill="white"/>
+                    <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="footer-brand-name">智治通</span>
+                <span class="footer-brand-slogan">川北川南一站式社区共治服务平台 </span>
+            </div>
+        </div>
+        <div class="footer-info">
+            <p>项目定位：川北川南一站式社区共治服务平台</p>
+            <p>团队优势：思政、法学、财务管理、计算机跨专业团队</p>
+        </div>
+    </div>
+</footer>
+<!-- 引入公共脚本 -->
+<script src="common.js"></script>
+
+<!-- 移动端底部Tab导航 -->
+<div class="mobile-tab-bar">
+    <div class="tab-bar-list">
+        <a href="index.html" class="tab-bar-item">
+            <i class="fa-solid fa-house"></i>
+            <span>首页</span>
+        </a>
+        <a href="appeal-submit.html" class="tab-bar-item">
+            <i class="fa-solid fa-file-pen"></i>
+            <span>提交诉求</span>
+        </a>
+        <a href="appeal-query.html" class="tab-bar-item">
+            <i class="fa-solid fa-list-check"></i>
+            <span>我的诉求</span>
+        </a>
+        <a href="profile.html" class="tab-bar-item">
+            <i class="fa-solid fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
