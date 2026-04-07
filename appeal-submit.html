@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>诉求提交 - 智治通社区共治平台</title>
+    <!-- 引入公共样式 -->
+    <link rel="stylesheet" href="common.css">
+    <!-- 引入Font Awesome矢量图标 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ==================== 页面独有基础样式 ==================== */
+        body {
+            padding-top: 80px;
+        }
+        /* ==================== 页面标题区域 独有样式 ==================== */
+        .page-header {
+            text-align: center;
+            padding: 40px 24px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1a56db 100%);
+            color: white;
+            margin-bottom: 40px;
+        }
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .page-desc {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        /* ==================== 表单容器 独有样式 ==================== */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            padding: 0 24px;
+        }
+        .appeal-form {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        /* ==================== 表单独有样式 ==================== */
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #1f2937;
+            transition: all 0.3s;
+            background: #f9fafb url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 11l4-4H4l4 4z'/%3E%3C/svg%3E") right 16px center no-repeat;
+            appearance: none;
+        }
+        .form-select:focus {
+            outline: none;
+            border-color: #1a56db;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.1);
+        }
+        .form-textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #1f2937;
+            transition: all 0.3s;
+            background: #f9fafb;
+            min-height: 150px;
+            resize: vertical;
+            line-height: 1.8;
+        }
+        .form-textarea:focus {
+            outline: none;
+            border-color: #1a56db;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.1);
+        }
+        /* ==================== 图片上传区域 独有样式 ==================== */
+        .upload-container {
+            border: 2px dashed #e5e7eb;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: #f9fafb;
+        }
+        .upload-container:hover, .upload-container.active {
+            border-color: #1a56db;
+            background: #f0f7ff;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #1a56db;
+            margin-bottom: 16px;
+        }
+        .upload-text {
+            font-size: 15px;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
+        .upload-hint {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+        #fileInput {
+            display: none;
+        }
+        /* ==================== 图片预览区域 独有样式 ==================== */
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .preview-item {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+        }
+        .preview-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .preview-remove {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        /* ==================== 按钮组 独有样式 ==================== */
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 48px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(26, 86, 219, 0.3);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(26, 86, 219, 0.4);
+        }
+        .btn-secondary {
+            background: white;
+            color: #1a56db;
+            border: 2px solid #1a56db;
+            margin-left: 0;
+        }
+        .btn-secondary:hover {
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+        /* ==================== 响应式独有适配 ==================== */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 28px;
+            }
+            .appeal-form {
+                padding: 32px 24px;
+            }
+            .upload-container {
+                padding: 24px;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="nav-brand">
+            <div class="brand-logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="#1a56db" stroke-width="2"/>
+                    <path d="M20 8L28 24H12L20 8Z" fill="#1a56db"/>
+                    <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">智治通</span>
+                <span class="brand-slogan">川北川南一站式社区共治服务平台</span>
+            </div>
+        </a>
+        <!-- 汉堡按钮 -->
+        <div class="nav-toggle" id="navToggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </div>
+        <!-- 桌面菜单 -->
+        <ul class="nav-menu">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="project.html">项目介绍</a></li>
+            <li><a href="appeal-submit.html" class="active">诉求提交</a></li>
+            <li><a href="appeal-query.html">我的诉求</a></li>
+            <!-- 个人中心入口：普通用户登录后显示 -->
+            <li id="profileNavItem" style="display: none;"><a href="profile.html">个人中心</a></li>
+            <!-- 管理员后台入口：管理员登录后显示 -->
+            <li id="adminNavItem" style="display: none;"><a href="admin.html">管理员后台</a></li>
+            <!-- 消息通知入口：普通用户登录后显示 -->
+            <li id="noticeNavItem" class="nav-notice" style="display: none;">
+                <a href="javascript:;">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notice-badge" id="noticeBadge" style="display: none;">0</span>
+                </a>
+            </li>
+            <!-- 登录/注册入口：未登录显示 -->
+            <li id="loginNavItem"><a href="login.html" id="loginLink">登录/注册</a></li>
+            <!-- 退出登录入口：登录后显示 -->
+            <li id="logoutNavItem" style="display: none;"><a href="javascript:;" id="logoutBtn" style="color: #ef4444;">退出</a></li>
+        </ul>
+    </div>
+</nav>
+<!-- 页面标题 -->
+<div class="page-header">
+    <h1 class="page-title">诉求提交</h1>
+    <p class="page-desc">请详细填写您的诉求信息，我们将尽快为您匹配对应资源，解决问题</p>
+</div>
+<!-- 表单容器 -->
+<div class="form-container">
+    <form class="appeal-form" id="appealForm">
+
+        <!-- 诉求类型 -->
+        <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-tag"></i> 诉求类型</label>
+            <select class="form-select" id="appealType" required>
+                <option value="">请选择诉求类型</option>
+                <option value="纠纷调解">纠纷调解（如电梯安装、邻里矛盾等）</option>
+                <option value="设施报修">公共设施报修（如路灯、健身器材等）</option>
+                <option value="志愿服务">志愿服务申请（如独居老人关怀等）</option>
+                <option value="政策咨询">政策咨询（如社保、养老等）</option>
+                <option value="社区建议">社区建设建议</option>
+                <option value="其他">其他诉求</option>
+            </select>
+            <div class="error-message" id="typeError">请选择诉求类型</div>
+        </div>
+
+        <!-- 诉求描述 -->
+        <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-pen-to-square"></i> 诉求描述</label>
+            <div style="display: flex; gap: 12px; margin-bottom: 8px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-secondary" onclick="startVoiceFill('appealDesc', '诉求描述')" style="flex: 1; min-width: 150px;">
+                    <i class="fa-solid fa-microphone"></i> 语音输入诉求
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="voiceCorrect('appealDesc')" style="flex: 1; min-width: 150px;">
+                    <i class="fa-solid fa-pen-to-square"></i> 语音纠错修改
+                </button>
+                <button type="button" class="btn btn-secondary" id="autoClassifyBtn" style="flex: 1; min-width: 150px;">
+                    <i class="fa-solid fa-robot"></i> AI智能分类
+                </button>
+            </div>
+            <textarea class="form-textarea" id="appealDesc" placeholder="请详细描述您的诉求（如问题发生地点、具体情况、期望解决方式等）" required></textarea>
+            <div class="error-message" id="descError">诉求描述不能为空（至少10字）</div>
+        </div>
+
+
+
+        <!-- 图片上传 -->
+        <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-image"></i> 上传图片（可选）</label>
+            <div class="upload-container" id="uploadContainer" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">
+                    <i class="fa-solid fa-cloud-upload"></i>
+                </div>
+                <div class="upload-text">点击上传图片，最多支持3张</div>
+                <div class="upload-hint">支持JPG、PNG格式，单张图片不超过5MB</div>
+                <input type="file" id="fileInput" accept="image/jpeg,image/png" multiple>
+            </div>
+            <!-- 图片预览 -->
+            <div class="preview-container" id="previewContainer"></div>
+        </div>
+
+
+        <!-- 联系方式 -->
+        <!-- 联系方式（最终修复版：麦克风100%在框内，不超出，适配主题蓝色） -->
+        <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-mobile-screen"></i> 联系方式</label>
+            <div class="input-wrapper" style="position: relative; width: 100%;">
+                <!-- 输入框：预留足够的右侧内边距，给麦克风按钮留位置 -->
+                <input
+                        type="tel"
+                        class="form-control"
+                        id="contactPhone"
+                        placeholder="请输入您的手机号"
+                        maxlength="11"
+                        required
+                        style="width: 100%; height: 48px; padding: 0 48px 0 16px; box-sizing: border-box;"
+                >
+                <!-- 麦克风按钮：精准定位，100%在输入框内，不超出 -->
+                <button
+                        type="button"
+                        onclick="startVoiceFill('contactPhone', '手机号')"
+                        title="语音输入手机号"
+                        style="
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 32px;
+                height: 32px;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #1a56db;
+                transition: all 0.2s;
+                z-index: 10;
+            "
+                        onmouseover="this.style.color='#1e3a8a'"
+                        onmouseout="this.style.color='#1a56db'"
+                >
+                    <i class="fa-solid fa-microphone" style="font-size: 16px; margin: 0;"></i>
+                </button>
+            </div>
+            <div class="error-message" id="phoneError">请输入正确的手机号</div>
+        </div>
+
+
+        <!-- 提交按钮 -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">
+                <i class="fa-solid fa-arrow-left"></i> 返回首页
+            </button>
+            <button type="button" class="btn btn-primary" id="submitAppealBtn" onclick="submitAppeal()">
+                <i class="fa-solid fa-paper-plane"></i> 提交诉求
+            </button>
+        </div>
+    </form>
+</div>
+<!-- 页脚 -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="brand-logo">
+                <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="white" stroke-width="2"/>
+                    <path d="M20 8L28 24H12L20 8Z" fill="white"/>
+                    <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="footer-brand-name">智治通</span>
+                <span class="footer-brand-slogan">川北川南一站式社区共治服务平台 </span>
+            </div>
+        </div>
+        <div class="footer-info">
+            <p>项目定位：川北川南一站式社区共治服务平台</p>
+            <p>团队优势：思政、法学、财务管理、计算机跨专业团队</p>
+        </div>
+    </div>
+</footer>
+<!-- 引入公共脚本 -->
+<script src="common.js"></script>
+<!-- 页面独有脚本 -->
+<script>
+
+    // 权限拦截：管理员禁止访问居民页面，直接弹提示
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. 管理员禁止访问，弹出正确提示
+        if (adminBanUserPage()) {
+            return;
+        }
+        // 2. 未登录跳登录
+        const isLogin = localStorage.getItem('is_login');
+        const currentUser = localStorage.getItem('current_user');
+        if (!isLogin || isLogin !== 'true' || !currentUser) {
+            alert('请先登录后提交诉求');
+            window.location.href = 'login.html';
+            return;
+        }
+        // 填充手机号
+        document.getElementById('contactPhone').value = currentUser;
+    });
+
+    // 图片上传预览
+    const fileInput = document.getElementById('fileInput');
+    const previewContainer = document.getElementById('previewContainer');
+    const uploadContainer = document.getElementById('uploadContainer');
+    let uploadedFiles = []; // 存储上传的图片base64
+    fileInput.addEventListener('change', function(e) {
+        const files = e.target.files;
+        if (files.length === 0) return;
+        // 限制最多3张图片
+        if (uploadedFiles.length + files.length > 3) {
+            alert('最多只能上传3张图片');
+            return;
+        }
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            // 验证文件类型
+            if (!file.type.match('image/jpeg|image/png')) {
+                alert('请上传JPG或PNG格式的图片');
+                continue;
+            }
+            // 验证文件大小
+            if (file.size > 5 * 1024 * 1024) {
+                alert('单张图片大小不能超过5MB');
+                continue;
+            }
+            // 读取图片并预览
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const base64 = event.target.result;
+                uploadedFiles.push(base64);
+                // 创建预览元素
+                const previewItem = document.createElement('div');
+                previewItem.className = 'preview-item';
+                previewItem.innerHTML = `
+  <img src="${base64}" class="preview-img previewable-img" alt="诉求图片">
+        <div class="preview-remove" onclick="removeImage(${uploadedFiles.length - 1})">×</div>
+    `;
+                previewContainer.appendChild(previewItem);
+            };
+            reader.readAsDataURL(file);
+        }
+        // 清空文件输入，允许重复选择同一文件
+        fileInput.value = '';
+    });
+
+    // 移除图片
+    function removeImage(index) {
+        uploadedFiles.splice(index, 1);
+        previewContainer.innerHTML = '';
+        // 重新渲染预览
+        uploadedFiles.forEach((base64, i) => {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.innerHTML = `
+                    <img src="${base64}" class="preview-img" alt="诉求图片">
+                    <div class="preview-remove" onclick="removeImage(${i})">×</div>
+                `;
+            previewContainer.appendChild(previewItem);
+        });
+    }
+
+    // 表单验证
+    function validateForm() {
+        const appealType = document.getElementById('appealType').value;
+        const appealDesc = document.getElementById('appealDesc').value.trim();
+        const contactPhone = document.getElementById('contactPhone').value.trim();
+        let isValid = true;
+        // 清除所有错误提示
+        clearErrors();
+        // 验证诉求类型
+        if (!appealType) {
+            document.getElementById('typeError').classList.add('show');
+            isValid = false;
+        }
+        // 验证诉求描述
+        if (!appealDesc || appealDesc.length < 10) {
+            document.getElementById('descError').classList.add('show');
+            isValid = false;
+        }
+        // 验证手机号
+        if (!contactPhone || !/^1[3-9]\d{9}$/.test(contactPhone)) {
+            document.getElementById('phoneError').classList.add('show');
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    // 清除所有错误提示
+    function clearErrors() {
+        document.getElementById('typeError').classList.remove('show');
+        document.getElementById('descError').classList.remove('show');
+        document.getElementById('phoneError').classList.remove('show');
+    }
+
+    // 提交诉求
+    // ==================== 提交诉求函数（有反馈+防重复提交） ====================
+    async function submitAppeal() {
+        // 1. 表单校验
+        if (!validateForm()) {
+            return;
+        }
+
+        // 2. 防重复提交：禁用按钮，防止用户一直点
+        const submitBtn = document.getElementById('submitAppealBtn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 提交中...';
+        }
+
+        try {
+            // 3. 正确获取表单数据
+            const appealType = document.getElementById('appealType').value;
+            const appealDesc = document.getElementById('appealDesc').value.trim();
+            const contactPhone = document.getElementById('contactPhone').value.trim();
+
+            // 4. 生成诉求编号
+            const allAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+            const now = new Date();
+            const dateStr = now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0');
+            const todayAppeals = allAppeals.filter(item => item.code && item.code.startsWith(`SQ${dateStr}`));
+            const seq = todayAppeals.length + 1;
+            const appealCode = `SQ${dateStr}${String(seq).padStart(3,'0')}`;
+
+            // 5. 生成诉求数据
+            const newAppeal = {
+                id: Date.now(),
+                code: appealCode,
+                type: appealType,
+                desc: appealDesc,
+                phone: contactPhone,
+                submitTime: new Date().toLocaleString(),
+                status: '待处理',
+                images: uploadedFiles, // 把用户上传的图片存进去，管理员后台能看到
+                finishImages: [],
+                handlerDepartment: '',
+                handlerPerson: '',
+                dispatchRemark: '',
+                finishDesc: '',
+                result: '',
+                score: '',
+                scoreRemark: '',
+                verifyTime: '',
+                verifyResult: ''
+            };
+
+            // 6. 保存到本地存储
+            allAppeals.push(newAppeal);
+            localStorage.setItem('zhizhitong_appeals', JSON.stringify(allAppeals));
+
+            // 7. 给管理员发新诉求通知（管理员后台能收到小红点+弹窗）
+            sendAdminNotice(
+                '新诉求待受理',
+                `居民${contactPhone.slice(0,3)}****${contactPhone.slice(7)}提交了新的「${appealType}」诉求（编号：${appealCode}），请及时处理。`,
+                newAppeal.id
+            );
+
+            // 8. 提交成功的明确反馈
+            alert(`✅ 诉求提交成功！\n\n诉求编号：${appealCode}\n我们会尽快处理，请保持联系方式畅通。`);
+
+            // 9. 提交成功后清空表单+图片，避免重复提交
+            document.getElementById('appealForm').reset();
+            uploadedFiles = []; // 清空图片数组
+            previewContainer.innerHTML = ''; // 清空图片预览
+
+            // 10. 可选：提交成功后跳转到我的诉求页
+            // window.location.href = 'appeal-query.html';
+
+        } catch (error) {
+            console.error('诉求提交失败：', error);
+            alert('❌ 诉求提交失败，请刷新页面后重试！');
+        } finally {
+            // 11. 无论成功/失败，最后都恢复按钮状态
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 提交诉求';
+            }
+        }
+    }
+
+    // ==================== AI核心功能逻辑 ====================
+    // 1. AI智能分类，自动匹配诉求类型
+    document.getElementById('autoClassifyBtn').addEventListener('click', async function() {
+        const appealDesc = document.getElementById('appealDesc').value.trim();
+        if (!appealDesc || appealDesc.length < 10) {
+            alert('请先输入完整的诉求描述（至少10字）');
+            document.getElementById('appealDesc').focus();
+            return;
+        }
+        // 按钮加载状态
+        this.disabled = true;
+        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> AI正在分析...';
+        // 模拟AI智能分类，自动选择诉求类型
+        let type = '其他';
+        const desc = appealDesc;
+        if(desc.includes('电梯')||desc.includes('纠纷')||desc.includes('邻里')) type='纠纷调解';
+        else if(desc.includes('灯')||desc.includes('坏')||desc.includes('维修')||desc.includes('设施')) type='设施报修';
+        else if(desc.includes('老人')||desc.includes('志愿')) type='志愿服务';
+        else if(desc.includes('政策')||desc.includes('社保')||desc.includes('养老')) type='政策咨询';
+        else if(desc.includes('建议')||desc.includes('建设')) type='社区建议';
+
+        document.getElementById('appealType').value = type;
+
+        // 恢复按钮状态
+        this.disabled = false;
+        this.innerHTML = '<i class="fa-solid fa-robot"></i> AI智能分类';
+    });
+
+    // 2. 语音输入按钮点击事件
+    document.getElementById('voiceInputBtn').addEventListener('click', function() {
+        const btn = this;
+        startSpeechRecognition(function(status, text) {
+            if (status === 'onstart') {
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="fa-solid fa-microphone-lines-slash"></i> 正在聆听...';
+                speakText("请说出您的诉求");
+            } else if (status === 'onresult') {
+                // 把识别的文本填充到输入框
+                const oldText = document.getElementById('appealDesc').value;
+                document.getElementById('appealDesc').value = oldText + text;
+            } else if (status === 'onend' || status === 'onerror') {
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="fa-solid fa-microphone"></i> 语音输入诉求';
+                if (status === 'onerror') {
+                    alert(text);
+                } else {
+                    speakText("语音输入完成");
+                }
+            }
+        });
+    });
+
+</script>
+
+<!-- 移动端底部Tab导航 -->
+<div class="mobile-tab-bar">
+    <div class="tab-bar-list">
+        <a href="index.html" class="tab-bar-item">
+            <i class="fa-solid fa-house"></i>
+            <span>首页</span>
+        </a>
+        <a href="appeal-submit.html" class="tab-bar-item active">
+            <i class="fa-solid fa-file-pen"></i>
+            <span>提交诉求</span>
+        </a>
+        <a href="appeal-query.html" class="tab-bar-item">
+            <i class="fa-solid fa-list-check"></i>
+            <span>我的诉求</span>
+        </a>
+        <a href="profile.html" class="tab-bar-item">
+            <i class="fa-solid fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</div>
+
+
+<script>
+    // ==================== 补全管理员通知函数 ====================
+    // 工具函数：获取管理员消息列表
+    function getAdminNotices() {
+        return JSON.parse(localStorage.getItem('zhizhitong_admin_notices')) || [];
+    }
+
+    // 全局函数：给管理员发送新诉求通知
+    function sendAdminNotice(title, content, appealId) {
+        // 初始化本地存储，避免不存在报错
+        if (!localStorage.getItem('zhizhitong_admin_notices')) {
+            localStorage.setItem('zhizhitong_admin_notices', '[]');
+        }
+        const notices = getAdminNotices();
+        const newNotice = {
+            id: Date.now(),
+            title: title,
+            content: content,
+            appealId: appealId,
+            isRead: false,
+            createTime: new Date().toLocaleString()
+        };
+        // 新消息放在最前面，最多保留50条避免溢出
+        notices.unshift(newNotice);
+        if (notices.length > 50) notices.splice(50);
+        localStorage.setItem('zhizhitong_admin_notices', JSON.stringify(notices));
+    }
+</script>
+
+</body>
+</html>

@@ -4,112 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>项目介绍 - 智治通社区共治平台</title>
+    <!-- 引入公共样式 -->
+    <link rel="stylesheet" href="common.css">
     <!-- 引入Font Awesome矢量图标 -->
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ==================== 全局样式 ==================== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            color: #1f2937;
-            background-color: #f8fafc;
-            line-height: 1.6;
-        }
-        /* 全局平滑滚动 */
-        html {
-            scroll-behavior: smooth;
-        }
-        /* ==================== 导航栏 ==================== */
-        .navbar {
-            background: #ffffff;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            height: 70px;
-        }
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            height: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .brand-logo {
-            display: flex;
-            align-items: center;
-        }
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-        }
-        .brand-name {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a56db;
-        }
-        .brand-slogan {
-            font-size: 11px;
-            color: #6b7280;
-        }
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 32px;
-        }
-        .nav-menu a {
-            text-decoration: none;
-            color: #1f2937;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 8px 0;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        .nav-menu a:hover, .nav-menu a.active {
-            color: #1a56db;
-            border-bottom-color: #1a56db;
-        }
-        /* 移动端汉堡菜单 */
-        .nav-toggle {
-            display: none;
-            cursor: pointer;
-        }
-        .nav-menu-mobile {
-            display: none;
-            position: fixed;
-            top: 70px;
-            left: 0;
-            right: 0;
-            background: white;
-            flex-direction: column;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            z-index: 999;
-        }
-        .nav-menu-mobile.active {
-            display: flex;
-        }
-        .nav-menu-mobile li {
-            list-style: none;
-            margin-bottom: 16px;
-        }
-        .nav-menu-mobile a {
-            text-decoration: none;
-            color: #1f2937;
-            font-size: 16px;
-            font-weight: 500;
-        }
-        /* ==================== Hero 区域 ==================== */
+        /* ==================== Hero 区域 独有样式 ==================== */
         .hero {
             background: linear-gradient(135deg, #1e3a8a 0%, #1a56db 100%);
             color: white;
@@ -146,47 +46,7 @@
             line-height: 1.8;
             color: rgba(255,255,255,0.9);
         }
-        /* ==================== 通用 Section 样式 ==================== */
-        section {
-            padding: 80px 24px;
-        }
-        .bg-white {
-            background: #ffffff;
-        }
-        .bg-light {
-            background: #f8fafc;
-        }
-        .section-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .section-header {
-            text-align: center;
-            margin-bottom: 56px;
-        }
-        .section-title {
-            font-size: 36px;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 16px;
-            position: relative;
-            display: inline-block;
-        }
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: #1a56db;
-        }
-        .section-subtitle {
-            font-size: 16px;
-            color: #6b7280;
-        }
-        /* ==================== 内容卡片 ==================== */
+        /* ==================== 内容卡片 独有样式 ==================== */
         .content-block {
             background: transparent;
             border-radius: 0;
@@ -233,7 +93,7 @@
             margin-bottom: 12px;
             font-size: 17px;
         }
-        /* ==================== 政策背景表格 ==================== */
+        /* ==================== 政策背景表格 独有样式 ==================== */
         .policy-table-container {
             overflow-x: auto;
             margin-top: 24px;
@@ -273,76 +133,8 @@
         .policy-table tr:last-child td {
             border-bottom: none;
         }
-        /* ==================== 页脚 ==================== */
-        .footer {
-            background: #1e3a8a;
-            color: white;
-            padding: 40px 24px;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .footer-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .footer-brand-name {
-            font-size: 18px;
-            font-weight: 600;
-        }
-        .footer-brand-slogan {
-            font-size: 12px;
-            color: rgba(255,255,255,0.7);
-        }
-        .footer-info {
-            text-align: right;
-        }
-        .footer-info p {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 4px;
-        }
-        /* ==================== 返回顶部按钮 ==================== */
-        #backToTop {
-            display: none;
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1a56db;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 40px;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            z-index: 999;
-        }
-        /* ==================== 响应式适配 ==================== */
-        @media (max-width: 968px) {
-            .hero-title {
-                font-size: 36px;
-            }
-        }
+        /* ==================== 响应式独有适配 ==================== */
         @media (max-width: 640px) {
-            .nav-toggle {
-                display: block;
-            }
-            .nav-menu {
-                display: none;
-            }
-            .hero {
-                padding: 100px 16px 40px;
-            }
-            .hero-title {
-                font-size: 28px;
-            }
             .content-block {
                 padding: 24px;
             }
@@ -350,15 +142,6 @@
                 font-size: 20px;
             }
             .content-block p, .content-block li {
-                font-size: 15px;
-            }
-            .footer-container {
-                flex-direction: column;
-                gap: 24px;
-                text-align: center;
-            }
-            .back-btn a {
-                padding: 10px 24px;
                 font-size: 15px;
             }
         }
@@ -393,13 +176,26 @@
         <ul class="nav-menu">
             <li><a href="index.html">首页</a></li>
             <li><a href="project.html" class="active">项目介绍</a></li>
-            <li><a href="index.html#features">核心功能</a></li>
-            <li><a href="index.html#ecosystem">协同生态</a></li>
-            <li><a href="index.html#scenarios">应用场景</a></li>
+            <li><a href="appeal-submit.html">诉求提交</a></li>
+            <li><a href="appeal-query.html">我的诉求</a></li>
+            <!-- 个人中心入口：普通用户登录后显示 -->
+            <li id="profileNavItem" style="display: none;"><a href="profile.html">个人中心</a></li>
+            <!-- 管理员后台入口：管理员登录后显示 -->
+            <li id="adminNavItem" style="display: none;"><a href="admin.html">管理员后台</a></li>
+            <!-- 消息通知入口：普通用户登录后显示 -->
+            <li id="noticeNavItem" class="nav-notice" style="display: none;">
+                <a href="javascript:;">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notice-badge" id="noticeBadge" style="display: none;">0</span>
+                </a>
+            </li>
+            <!-- 登录/注册入口：未登录显示 -->
+            <li id="loginNavItem"><a href="login.html" id="loginLink">登录/注册</a></li>
+            <!-- 退出登录入口：登录后显示 -->
+            <li id="logoutNavItem" style="display: none;"><a href="javascript:;" id="logoutBtn" style="color: #ef4444;">退出</a></li>
         </ul>
     </div>
 </nav>
-
 <!-- 页面主体 -->
 <main>
     <!-- Hero 区域 -->
@@ -409,7 +205,6 @@
             <p class="hero-subtitle">聚焦川北川南社区治理痛点，打造一站式数字化共治解决方案</p>
         </div>
     </section>
-
     <!-- 项目定位 -->
     <section class="bg-white">
         <div class="section-container">
@@ -420,7 +215,6 @@
             </div>
         </div>
     </section>
-
     <!-- 政策背景 -->
     <section class="bg-light">
         <div class="section-container">
@@ -469,7 +263,6 @@
             </div>
         </div>
     </section>
-
     <!-- 核心功能详解 -->
     <section class="bg-white">
         <div class="section-container">
@@ -485,7 +278,6 @@
             </div>
         </div>
     </section>
-
     <!-- 商业模式 -->
     <section class="bg-light">
         <div class="section-container">
@@ -500,7 +292,6 @@
             </div>
         </div>
     </section>
-
     <!-- 核心创新与竞争力 -->
     <section class="bg-white">
         <div class="section-container">
@@ -515,7 +306,6 @@
             </div>
         </div>
     </section>
-
     <!-- 发展规划 -->
     <section class="bg-light">
         <div class="section-container">
@@ -531,10 +321,8 @@
         </div>
     </section>
 </main>
-
 <!-- 返回顶部按钮 -->
 <div id="backToTop">↑</div>
-
 <!-- 页脚 -->
 <footer class="footer">
     <div class="footer-container">
@@ -548,7 +336,7 @@
             </div>
             <div class="brand-text">
                 <span class="footer-brand-name">智治通</span>
-                <span class="footer-brand-slogan">川北川南一站式社区共治服务平台 | 小挑校赛初版</span>
+                <span class="footer-brand-slogan">川北川南一站式社区共治服务平台 </span>
             </div>
         </div>
         <div class="footer-info">
@@ -557,28 +345,30 @@
         </div>
     </div>
 </footer>
+<!-- 引入公共脚本 -->
+<script src="common.js"></script>
 
-<!-- 脚本 -->
-<script>
-    // 移动端汉堡菜单
-    const navToggle = document.getElementById('navToggle');
-    // 复制桌面菜单到移动端
-    const mobileMenu = document.createElement('ul');
-    mobileMenu.className = 'nav-menu-mobile';
-    mobileMenu.innerHTML = document.querySelector('.nav-menu').innerHTML;
-    document.querySelector('.nav-container').appendChild(mobileMenu);
-    navToggle.addEventListener('click', () => {
-        mobileMenu.classList.toggle('active');
-    });
+<!-- 移动端底部Tab导航 -->
+<div class="mobile-tab-bar">
+    <div class="tab-bar-list">
+        <a href="index.html" class="tab-bar-item">
+            <i class="fa-solid fa-house"></i>
+            <span>首页</span>
+        </a>
+        <a href="appeal-submit.html" class="tab-bar-item">
+            <i class="fa-solid fa-file-pen"></i>
+            <span>提交诉求</span>
+        </a>
+        <a href="appeal-query.html" class="tab-bar-item">
+            <i class="fa-solid fa-list-check"></i>
+            <span>我的诉求</span>
+        </a>
+        <a href="profile.html" class="tab-bar-item">
+            <i class="fa-solid fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</div>
 
-    // 返回顶部按钮
-    const backToTop = document.getElementById('backToTop');
-    window.addEventListener('scroll', () => {
-        backToTop.style.display = window.scrollY > 300 ? 'block' : 'none';
-    });
-    backToTop.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-</script>
 </body>
 </html>

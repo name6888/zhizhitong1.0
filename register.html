@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 智治通社区共治平台</title>
+    <!-- 引入公共样式 -->
+    <link rel="stylesheet" href="common.css">
+    <!-- 引入Font Awesome矢量图标 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ==================== 页面独有基础样式 ==================== */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1a56db 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 0;
+        }
+        /* ==================== 背景动态装饰 独有样式 ==================== */
+        .bg-decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .bg-decoration::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 50%, rgba(96, 165, 250, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(147, 197, 253, 0.1) 0%, transparent 50%);
+            animation: bgFloat 20s ease-in-out infinite;
+        }
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-2%, -2%) rotate(1deg); }
+        }
+        /* ==================== 返回首页按钮 独有样式 ==================== */
+        .back-btn {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            z-index: 100;
+        }
+        .back-btn a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s;
+        }
+        .back-btn a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(-5px);
+        }
+        /* ==================== 注册卡片 独有样式 ==================== */
+        .register-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 56px 48px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+            0 0 0 1px rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 10;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* ==================== Logo区域 独有样式 ==================== */
+        .register-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
+            background: #faf6f6;
+            border: 2px solid #1a56db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(26, 86, 219, 0.15);
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .logo svg {
+            width: 40px;
+            height: 40px;
+            fill: none;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1a56db 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            font-size: 15px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        /* ==================== 密码强度指示器 独有样式 ==================== */
+        .password-strength {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            height: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .strength-bar {
+            flex: 1;
+            background: #e5e7eb;
+            transition: all 0.3s;
+        }
+        .strength-bar.weak { background: #ef4444; }
+        .strength-bar.medium { background: #f59e0b; }
+        .strength-bar.strong { background: #10b981; }
+        /* ==================== 按钮独有样式 ==================== */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(26, 86, 219, 0.3);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(26, 86, 219, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        /* ==================== 登录链接 独有样式 ==================== */
+        .login-link {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .login-link a {
+            color: #1a56db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .login-link a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #1a56db, #3b82f6);
+            transition: width 0.3s;
+        }
+        .login-link a:hover::after {
+            width: 100%;
+        }
+        /* ==================== 响应式独有适配 ==================== */
+        @media (max-width: 640px) {
+            .register-box {
+                padding: 40px 32px;
+                border-radius: 20px;
+            }
+            .back-btn {
+                top: 16px;
+                left: 16px;
+            }
+            .back-btn a {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+            .title {
+                font-size: 24px;
+            }
+            .subtitle {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 背景动态装饰 -->
+<div class="bg-decoration"></div>
+<!-- 返回首页按钮 -->
+<div class="back-btn">
+    <a href="index.html">
+        <i class="fa-solid fa-arrow-left"></i>
+        返回首页
+    </a>
+</div>
+<!-- 注册卡片 -->
+<div class="register-box">
+    <div class="register-header">
+        <div class="logo">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="18" stroke="#1a56db" stroke-width="2"/>
+                <path d="M20 8L28 24H12L20 8Z" fill="#1a56db"/>
+                <circle cx="20" cy="20" r="6" fill="#3b82f6"/>
+            </svg>
+        </div>
+        <h1 class="title">创建账号</h1>
+        <p class="subtitle">加入智治通，共建美好社区</p>
+    </div>
+    <form id="registerForm">
+        <div class="form-group">
+            <label for="phone">手机号</label>
+            <div class="input-wrapper">
+                <input type="tel" id="phone" placeholder="请输入您的手机号" maxlength="11" autocomplete="tel">
+                <i class="fa-solid fa-mobile-screen"></i>
+            </div>
+            <div class="error-message" id="phoneError">请输入正确的手机号格式</div>
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label>
+            <div class="input-wrapper">
+                <input type="password" id="password" placeholder="请设置6-12位密码" autocomplete="new-password">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <div class="password-strength">
+                <div class="strength-bar" id="strength1"></div>
+                <div class="strength-bar" id="strength2"></div>
+                <div class="strength-bar" id="strength3"></div>
+            </div>
+            <div class="error-message" id="passwordError">密码长度应为6-12位</div>
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">确认密码</label>
+            <div class="input-wrapper">
+                <input type="password" id="confirmPassword" placeholder="请再次输入密码" autocomplete="new-password">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <div class="error-message" id="confirmError">两次输入的密码不一致</div>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="handleRegister(this)">
+            <span class="btn-text">注册并登录</span>
+            <div class="loading">
+                <div class="spinner"></div>
+                <span>注册中...</span>
+            </div>
+        </button>
+    </form>
+    <div class="login-link">
+        已有账号？<a href="login.html">立即登录</a> | <a href="forgot-password.html">忘记密码？</a>
+    </div>
+</div>
+<!-- 引入公共脚本 -->
+<script src="common.js"></script>
+<!-- 页面独有脚本 -->
+<script>
+    // 表单验证
+    function validateForm() {
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const confirmPassword = document.getElementById('confirmPassword').value.trim();
+        let isValid = true;
+        // 手机号验证
+        if (!phone) { showError('phone', '请输入手机号'); isValid = false; }
+        else if (!/^1[3-9]\d{9}$/.test(phone)) { showError('phone', '请输入正确的手机号'); isValid = false; }
+        // 密码验证
+        if (!password) { showError('password', '请输入密码'); isValid = false; }
+        else if (password.length < 6 || password.length > 12) { showError('password', '密码长度应为6-12位'); isValid = false; }
+        // 确认密码验证
+        if (!confirmPassword) { showError('confirm', '请再次输入密码'); isValid = false; }
+        else if (password !== confirmPassword) { showError('confirm', '两次输入的密码不一致'); isValid = false; }
+        return isValid;
+    }
+
+    // 密码强度检测
+    document.getElementById('password').addEventListener('input', function(e) {
+        const password = e.target.value;
+        const strength1 = document.getElementById('strength1');
+        const strength2 = document.getElementById('strength2');
+        const strength3 = document.getElementById('strength3');
+        // 重置强度条
+        strength1.className = 'strength-bar';
+        strength2.className = 'strength-bar';
+        strength3.className = 'strength-bar';
+        // 弱：6位以上纯数字/字母
+        if (password.length >= 6) {
+            strength1.className = 'strength-bar weak';
+        }
+        // 中：8位以上，包含数字+字母
+        if (password.length >= 8 && /[A-Za-z]/.test(password) && /[0-9]/.test(password)) {
+            strength2.className = 'strength-bar medium';
+        }
+        // 强：10位以上，包含大小写+数字
+        if (password.length >= 10 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password)) {
+            strength3.className = 'strength-bar strong';
+        }
+    });
+
+    // 实时验证确认密码
+    document.getElementById('confirmPassword').addEventListener('input', function(e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = e.target.value;
+        const confirmError = document.getElementById('confirmError');
+        if (confirmPassword && password !== confirmPassword) {
+            confirmError.textContent = '两次输入的密码不一致';
+            confirmError.classList.add('show');
+        } else {
+            confirmError.classList.remove('show');
+        }
+    });
+
+    // 注册处理
+    function handleRegister(btn) {
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const btnText = btn.querySelector('.btn-text');
+        const loading = btn.querySelector('.loading');
+        // 清除错误+验证表单
+        clearErrors();
+        if (!validateForm()) return;
+        // 模拟加载
+        btn.disabled = true;
+        btnText.style.display = 'none';
+        loading.classList.add('active');
+        // 注册逻辑（存储用户信息）
+        setTimeout(() => {
+            localStorage.setItem('zhizhitong_user', JSON.stringify({ phone, pwd: password }));
+            // 自动登录
+            localStorage.setItem('is_login', 'true');
+            localStorage.setItem('current_user', phone);
+            alert('注册成功！即将跳转到首页');
+            window.location.href = 'index.html';
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人中心 - 智治通社区共治平台</title>
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .profile-card {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    .profile-header {
+      background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%);
+      color: white;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: white;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: #1a56db;
+    }
+    .profile-name {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .profile-phone {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 24px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: center;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a56db;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .profile-menu {
+      padding: 16px 0;
+    }
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: #1f2937;
+    }
+    .menu-item:hover {
+      background: #f8fafc;
+    }
+    .menu-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .menu-left i {
+      font-size: 18px;
+      color: #1a56db;
+      width: 24px;
+      text-align: center;
+    }
+
+
+    /* 通用弹窗样式（支持意见反馈） */
+    .image-modal {
+      position: fixed; top:0; left:0; width:100vw; height:100vh;
+      background:rgba(0,0,0,0.9); z-index:9999;
+      display:none; justify-content:center; align-items:center;
+    }
+    .image-modal.show { display:flex; }
+
+
+  </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-logo">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="#1a56db" stroke-width="2"/>
+          <path d="M20 8L28 24H12L20 8Z" fill="#1a56db"/>
+          <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">智治通</span>
+        <span class="brand-slogan">川北川南一站式社区共治服务平台</span>
+      </div>
+    </a>
+    <div class="nav-toggle" id="navToggle">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </div>
+    <ul class="nav-menu">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="project.html">项目介绍</a></li>
+      <li><a href="appeal-submit.html">诉求提交</a></li>
+      <li><a href="appeal-query.html">我的诉求</a></li>
+      <!-- 个人中心入口：普通用户登录后显示 -->
+      <li id="profileNavItem" style="display: none;"><a href="profile.html" class="active">个人中心</a></li>
+      <!-- 管理员后台入口：管理员登录后显示 -->
+      <li id="adminNavItem" style="display: none;"><a href="admin.html">管理员后台</a></li>
+      <!-- 消息通知入口：普通用户登录后显示 -->
+      <li id="noticeNavItem" class="nav-notice" style="display: none;">
+        <a href="javascript:;">
+          <i class="fa-solid fa-bell"></i>
+          <span class="notice-badge" id="noticeBadge" style="display: none;">0</span>
+        </a>
+      </li>
+      <!-- 登录/注册入口：未登录显示 -->
+      <li id="loginNavItem"><a href="login.html" id="loginLink">登录/注册</a></li>
+      <!-- 退出登录入口：登录后显示 -->
+      <li id="logoutNavItem" style="display: none;"><a href="javascript:;" id="logoutBtn" style="color: #ef4444;">退出</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main style="padding-top: 80px; padding-bottom: 40px;">
+  <div class="profile-card">
+    <!-- 个人信息头部 -->
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div class="profile-name">社区居民</div>
+      <div class="profile-phone" id="profilePhone">138****8888</div>
+    </div>
+
+    <!-- 诉求统计 -->
+    <div class="profile-stats">
+      <div class="stat-item">
+        <div class="stat-number" id="totalAppeals">0</div>
+        <div class="stat-label">提交诉求</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="completedAppeals">0</div>
+        <div class="stat-label">已完成</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="pendingAppeals">0</div>
+        <div class="stat-label">待处理</div>
+      </div>
+    </div>
+
+    <!-- 功能菜单 -->
+    <div class="profile-menu">
+      <a href="appeal-query.html" class="menu-item">
+        <div class="menu-left">
+          <i class="fa-solid fa-file-invoice"></i>
+          <span>我的诉求</span>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="color: #9ca3af;"></i>
+      </a>
+      <div class="menu-item" onclick="alert('修改密码功能开发中')">
+        <div class="menu-left">
+          <i class="fa-solid fa-lock"></i>
+          <span>修改密码</span>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="color: #9ca3af;"></i>
+      </div>
+      <div class="menu-item" onclick="openFeedbackModal()">
+        <div class="menu-left">
+          <i class="fa-solid fa-comment-dots"></i>
+          <span>意见反馈</span>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="color: #9ca3af;"></i>
+      </div>
+      <div class="menu-item" onclick="logout()">
+        <div class="menu-left">
+          <i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i>
+          <span style="color: #ef4444;">退出登录</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 移动端底部Tab导航 -->
+<div class="mobile-tab-bar">
+  <div class="tab-bar-list">
+    <a href="index.html" class="tab-bar-item">
+      <i class="fa-solid fa-home"></i>
+      <span>首页</span>
+    </a>
+    <a href="appeal-submit.html" class="tab-bar-item">
+      <i class="fa-solid fa-plus-circle"></i>
+      <span>提交诉求</span>
+    </a>
+    <a href="appeal-query.html" class="tab-bar-item">
+      <i class="fa-solid fa-file-invoice"></i>
+      <span>我的诉求</span>
+    </a>
+    <a href="profile.html" class="tab-bar-item active">
+      <i class="fa-solid fa-user"></i>
+      <span>我的</span>
+    </a>
+  </div>
+</div>
+
+<!-- 页脚 -->
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <div class="brand-logo">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="white" stroke-width="2"/>
+          <path d="M20 8L28 24H12L20 8Z" fill="white"/>
+          <circle cx="20" cy="20" r="6" fill="#60a5fa"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="footer-brand-name">智治通</span>
+        <span class="footer-brand-slogan">川北川南一站式社区共治服务平台</span>
+      </div>
+    </div>
+    <div class="footer-info">
+      <p>项目定位：川北川南一站式社区共治服务平台</p>
+      <p>团队优势：思政、法学、财务管理、计算机跨专业团队</p>
+    </div>
+  </div>
+
+
+  <!-- 意见反馈弹窗（个人中心专用） -->
+  <div class="image-modal" id="feedbackModal" style="z-index: 99998;">
+    <div class="modal-content" style="max-width: 600px; width: 90vw; background: white; border-radius: 24px; padding: 32px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h3 style="margin: 0; font-size: 20px; font-weight: 700; color: #1f2937;">
+          <i class="fa-solid fa-comment-dots" style="color: #1a56db; margin-right: 8px;"></i>意见反馈
+        </h3>
+        <button onclick="closeFeedbackModal()" style="background:none; border:none; font-size:20px; cursor:pointer; color:#6b7280;">×</button>
+      </div>
+      <form id="feedbackForm">
+        <div style="margin-bottom:16px;">
+          <label style="display:block; margin-bottom:6px; font-weight:600;">反馈类型</label>
+          <select id="feedbackType" required style="width:100%; padding:10px; border:2px solid #e5e7eb; border-radius:8px;">
+            <option value="">请选择反馈类型</option>
+            <option value="功能建议">功能建议</option>
+            <option value="使用问题">使用问题</option>
+            <option value="内容投诉">内容投诉</option>
+            <option value="其他">其他反馈</option>
+          </select>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block; margin-bottom:6px; font-weight:600;">反馈内容</label>
+          <textarea id="feedbackDesc" required placeholder="请详细描述你的问题或建议（至少10字）" style="width:100%; min-height:100px; padding:10px; border:2px solid #e5e7eb; border-radius:8px;"></textarea>
+        </div>
+        <div style="margin-bottom:24px;">
+          <label style="display:block; margin-bottom:6px; font-weight:600;">联系方式</label>
+          <input type="tel" id="feedbackPhone" readonly style="width:100%; padding:10px; border:2px solid #e5e7eb; border-radius:8px; background:#f9fafb;">
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" onclick="closeFeedbackModal()" style="padding:8px 16px; border:2px solid #e5e7eb; border-radius:8px; background:white; cursor:pointer;">取消</button>
+          <button type="button" onclick="submitFeedback()" style="padding:8px 16px; border:none; border-radius:8px; background:#1a56db; color:white; cursor:pointer;">提交反馈</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+</footer>
+
+<script src="common.js"></script>
+<script>
+  // 登录校验
+  document.addEventListener('DOMContentLoaded', function() {
+    const isLogin = localStorage.getItem('is_login');
+    const currentUser = localStorage.getItem('current_user');
+    if (!isLogin || isLogin !== 'true' || !currentUser) {
+      alert('请先登录');
+      window.location.href = 'login.html';
+      return;
+    }
+
+    // 显示手机号
+    document.getElementById('profilePhone').textContent = currentUser.slice(0,3) + '****' + currentUser.slice(7);
+
+    // 统计诉求数据
+    const allAppeals = JSON.parse(localStorage.getItem('zhizhitong_appeals')) || [];
+    const userAppeals = allAppeals.filter(a => a.phone === currentUser);
+    const total = userAppeals.length;
+    const completed = userAppeals.filter(a => a.status === '已完成').length;
+    const pending = userAppeals.filter(a => a.status === '待处理' || a.status === '处理中' || a.status === '待核验').length;
+
+    document.getElementById('totalAppeals').textContent = total;
+    document.getElementById('completedAppeals').textContent = completed;
+    document.getElementById('pendingAppeals').textContent = pending;
+  });
+
+  // 退出登录
+  function logout() {
+    if (confirm('确定要退出登录吗？')) {
+      localStorage.removeItem('is_login');
+      localStorage.removeItem('current_user');
+      alert('退出登录成功');
+      window.location.href = 'index.html';
+    }
+  }
+
+
+  // ==================== 个人中心意见反馈功能 ====================
+  let feedbackModal = null;
+
+  // 打开反馈弹窗
+  function openFeedbackModal() {
+    feedbackModal = document.getElementById('feedbackModal');
+    feedbackModal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    // 自动填充当前用户手机号
+    const currentUser = localStorage.getItem('current_user');
+    document.getElementById('feedbackPhone').value = currentUser;
+    // 重置表单
+    document.getElementById('feedbackForm').reset();
+    document.getElementById('feedbackPhone').value = currentUser;
+  }
+
+  // 关闭反馈弹窗
+  function closeFeedbackModal() {
+    if(feedbackModal) feedbackModal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // 提交反馈（对接管理员后台）
+  function submitFeedback() {
+    const type = document.getElementById('feedbackType').value;
+    const desc = document.getElementById('feedbackDesc').value.trim();
+    const phone = document.getElementById('feedbackPhone').value.trim();
+
+    if(!type) { alert('请选择反馈类型'); return; }
+    if(!desc || desc.length < 10) { alert('反馈内容至少10个字'); return; }
+
+    // 初始化本地存储
+    if (!localStorage.getItem('zhizhitong_feedbacks')) {
+      localStorage.setItem('zhizhitong_feedbacks', JSON.stringify([]));
+    }
+
+    // 生成反馈数据
+    const allFeedbacks = JSON.parse(localStorage.getItem('zhizhitong_feedbacks')) || [];
+    const now = new Date();
+    const dateStr = now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0');
+    const seq = allFeedbacks.filter(i=>i.code?.startsWith(`FK${dateStr}`)).length + 1;
+    const code = `FK${dateStr}${String(seq).padStart(3,'0')}`;
+
+    const newFeedback = {
+      id: Date.now(),
+      code: code,
+      type: type,
+      desc: desc,
+      phone: phone,
+      submitTime: new Date().toLocaleString(),
+      status: '待处理',
+      handleResult: '',
+      handleTime: '',
+      handler: ''
+    };
+
+    allFeedbacks.push(newFeedback);
+    localStorage.setItem('zhizhitong_feedbacks', JSON.stringify(allFeedbacks));
+
+    // 发送通知给管理员（和admin后台打通）
+    if(window.sendAdminNotice) {
+      sendAdminNotice(
+              '新意见反馈待处理',
+              `居民${phone.slice(0,3)}****${phone.slice(7)}提交了「${type}」反馈（编号：${code}），请及时处理。`,
+              newFeedback.id
+      );
+    }
+
+    alert(`✅ 反馈提交成功！\n编号：${code}\n我们会尽快处理并回复您`);
+    closeFeedbackModal();
+  }
+
+  // 复用公共弹窗样式（确保弹窗显示）
+  if(!document.querySelector('style#feedbackStyle')) {
+    const style = document.createElement('style');
+    style.id = 'feedbackStyle';
+    style.textContent = `
+        .image-modal {
+            position: fixed; top:0; left:0; width:100vw; height:100vh;
+            background:rgba(0,0,0,0.9); z-index:9999;
+            display:none; justify-content:center; align-items:center;
+        }
+        .image-modal.show { display:flex; }
+    `;
+    document.head.appendChild(style);
+  }
+
+
+</script>
+
+<!-- 移动端底部Tab导航 -->
+<div class="mobile-tab-bar">
+  <div class="tab-bar-list">
+    <a href="index.html" class="tab-bar-item">
+      <i class="fa-solid fa-house"></i>
+      <span>首页</span>
+    </a>
+    <a href="appeal-submit.html" class="tab-bar-item">
+      <i class="fa-solid fa-file-pen"></i>
+      <span>提交诉求</span>
+    </a>
+    <a href="appeal-query.html" class="tab-bar-item">
+      <i class="fa-solid fa-list-check"></i>
+      <span>我的诉求</span>
+    </a>
+    <a href="profile.html" class="tab-bar-item active">
+      <i class="fa-solid fa-user"></i>
+      <span>我的</span>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>
